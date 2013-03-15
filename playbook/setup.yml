@@ -1,0 +1,43 @@
+##
+# Ansible playbook for setting up a Git Drupal Development Workflow on an
+# Ubuntu 12.04 server.
+#
+
+---
+- hosts: all
+  gather_facts: False
+
+  vars:
+    www_dir: '/var/www'
+
+  vars_files:
+    - settings.yml
+
+  tasks:
+    ##
+    # Apt package installation of required software.
+    #
+    - name: All | Install required packages.
+      action: apt pkg=$item state=installed
+      with_items:
+        - apache2
+        - libapache2-mod-php5
+        - mysql-server
+        - php5-mysql
+        - php5-gd
+        - php-pear
+        - php5-dev
+        - php5-curl
+        - apache2-dev
+        - memcached
+        - php5-memcache
+        - make
+        - php-apc
+        - unzip
+        - php5-mcrypt
+        - php5-xmlrpc
+        - php-soap
+        - php5-gd
+        - php-pear
+        - curl
+
