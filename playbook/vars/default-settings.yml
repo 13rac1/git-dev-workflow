@@ -1,6 +1,10 @@
 # Default settings
 ---
 
+# General settings
+regular_user: 'git-dev'
+
+
 # php.ini
 php_max_execution_time: '90'
 php_display_errors: 'On'

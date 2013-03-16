@@ -9,6 +9,7 @@
 
   vars:
     www_dir: '/var/www'
+    git_dir: '/var/git'
 
   vars_files:
     - settings.yml
@@ -25,22 +26,49 @@
         - mysql-server
         - php5-mysql
         - php5-gd
-        - php-pear
         - php5-dev
         - php5-curl
-        - memcached
-        - php5-memcache
-        - make
         - php-apc
-        - unzip
         - php5-mcrypt
         - php5-xmlrpc
         - php-soap
-        - php5-gd
-        - php-pear
+        - memcached
+        - php5-memcache
+        - make
+        - unzip
         - curl
 
     ##
     # Drush install, a Drupal shell tool.
     #
     - include: tasks/ubuntu-drush.yml
+
+    ##
+    # Create the basic users, git to own the repos, and a regular user.
+    #
+    - name: Users | Create git user
+      action: user name=git group=git createhome=yes home=$git_dir generate_ssh_key=yes
+
+    - name: Users | Create regular user
+      action: user name=$user_account group=$user_account createhome=yes home=/home/$user_account generate_ssh_key=yes
+
+    ##
+    # Install the Gitolite Git repository access manager
+    #
+    - name: Gitolite | Automatic generate SSH Key for root
+      command: ssh-keygen -b 4096 -t rsa -f /root/.ssh/id_rsa -P ""
+
+    - name: Gitolite | Copy root key to /tmp
+      action: copy src=/root/.ssh/id_rsa.pub dest=/tmp/root.pub owner=root group=root mode=644
+
+    - name: Gitolite | Clone Gitolite repository at tag 3.4
+      action: git repo=https://github.com/sitaramc/gitolite.git dest=/usr/local/src/gitolite version=3.4
+
+    - name: Gitolite | Create bin directory for the git user
+      action: file path=$git_dir/bin state=directory owner=git group=git
+
+    - name: Gitolite | Install gitolite
+      command: /usr/local/src/gitolite/install -ln $git_dir/bin
+
+    - name: Gitolite | Setup gitolite
+      command: su - git -c "gitolite setup -k /tmp/root.pub"
