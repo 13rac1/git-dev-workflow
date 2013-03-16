@@ -48,7 +48,7 @@ Install
 
         ansible-playbook -c local setup.yml
 
-9.  Add *.example.com*, *test.example.com*, *example.com*, and *www.example.com* entries
+9.  Add *dev.example.com*, *test.example.com*, *example.com*, and *www.example.com* entries
     to your local /etc/hosts file or your DNS system.
 10. Done?
 

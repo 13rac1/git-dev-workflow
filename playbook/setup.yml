@@ -41,3 +41,7 @@
         - php-pear
         - curl
 
+    ##
+    # Drush install, a Drupal shell tool.
+    #
+    - include: tasks/ubuntu-drush.yml
