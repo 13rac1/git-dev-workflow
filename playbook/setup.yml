@@ -28,7 +28,6 @@
         - php-pear
         - php5-dev
         - php5-curl
-        - apache2-dev
         - memcached
         - php5-memcache
         - make
