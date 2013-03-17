@@ -2,7 +2,7 @@
 ---
 
 # General settings
-regular_user: 'git-dev'
+user_account: 'git-dev'
 
 
 # php.ini
