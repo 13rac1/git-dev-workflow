@@ -47,16 +47,17 @@
     # Create the basic users, git to own the repos, and a regular user.
     #
     - name: Users | Create git user
-      action: user name=git group=git createhome=yes home=$git_dir generate_ssh_key=yes
+      action: user name=git createhome=yes home=$git_dir generate_ssh_key=yes
 
     - name: Users | Create regular user
-      action: user name=$user_account group=$user_account createhome=yes home=/home/$user_account generate_ssh_key=yes
+      action: user name=${user_account} createhome=yes home=/home/${user_account} generate_ssh_key=yes
 
     ##
     # Install the Gitolite Git repository access manager
     #
     - name: Gitolite | Automatic generate SSH Key for root
       command: ssh-keygen -b 4096 -t rsa -f /root/.ssh/id_rsa -P ""
+      creates=/root/.ssh/id_rsa
 
     - name: Gitolite | Copy root key to /tmp
       action: copy src=/root/.ssh/id_rsa.pub dest=/tmp/root.pub owner=root group=root mode=644
@@ -68,7 +69,7 @@
       action: file path=$git_dir/bin state=directory owner=git group=git
 
     - name: Gitolite | Install gitolite
-      command: /usr/local/src/gitolite/install -ln $git_dir/bin
+      command: /usr/local/src/gitolite/install -ln ${git_dir}/bin
 
-    - name: Gitolite | Setup gitolite
+    - name: Gitolite | Setup gitolite with root's key
       command: su - git -c "gitolite setup -k /tmp/root.pub"
