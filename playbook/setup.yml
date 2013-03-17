@@ -5,7 +5,7 @@
 
 ---
 - hosts: all
-  gather_facts: False
+  gather_facts: no
 
   vars:
     www_dir: '/var/www'
@@ -16,10 +16,10 @@
 
   tasks:
     ##
-    # Apt package installation of required software.
+    # Installation of required software.
     #
     - name: All | Install required packages.
-      action: apt pkg=$item state=installed
+      apt: pkg=$item state=installed
       with_items:
         - apache2
         - libapache2-mod-php5
@@ -47,10 +47,10 @@
     # Create the basic users, git to own the repos, and a regular user.
     #
     - name: Users | Create git user
-      action: user name=git createhome=yes home=$git_dir generate_ssh_key=yes
+      user: name=git createhome=yes home=$git_dir generate_ssh_key=yes
 
     - name: Users | Create regular user
-      action: user name=${user_account} createhome=yes home=/home/${user_account} generate_ssh_key=yes
+      user: name=${user_account} createhome=yes home=/home/${user_account} generate_ssh_key=yes
 
     ##
     # Install the Gitolite Git repository access manager
@@ -58,18 +58,34 @@
     - name: Gitolite | Automatic generate SSH Key for root
       command: ssh-keygen -b 4096 -t rsa -f /root/.ssh/id_rsa -P "" creates=/root/.ssh/id_rsa
 
-    - name: Gitolite | Copy root key to /tmp
-      action: copy src=/root/.ssh/id_rsa.pub dest=/tmp/root.pub owner=root group=root mode=644
+    - name: Gitolite | Add localhost to authorized_keys
+      shell: ssh-keyscan -t rsa localhost >> /root/.ssh/known_hosts
 
-    - name: Gitolite | Clone Gitolite repository at tag 3.4
-      action: git repo=https://github.com/sitaramc/gitolite.git dest=/usr/local/src/gitolite version=v3.4
+    - name: Gitolite | Copy root key to /tmp
+      copy: src=/root/.ssh/id_rsa.pub dest=/tmp/root.pub owner=root group=root mode=644
 
     - name: Gitolite | Create bin directory for the git user
-      action: file path=$git_dir/bin state=directory owner=git group=git
+      file: path=$git_dir/bin state=directory owner=git group=git
+
+    - name: Gitolite | Clone Gitolite repository
+      shell: su - git -c "git clone https://github.com/sitaramc/gitolite.git" creates=${git_dir}/gitolite/.git/HEAD
+      # Some information says sudo_user will work, but no.
+      #git: repo=https://github.com/sitaramc/gitolite.git dest=/usr/local/src/gitolite version=v3.4
+      #sudo_user: git
+
+    - name: Gitolite | Checkout the correct tag, v3.4
+      shell: su - git -c "cd gitolite;git checkout v3.4;"
 
     - name: Gitolite | Install gitolite
-      command: /usr/local/src/gitolite/install -ln ${git_dir}/bin
+      shell: su - git -c "gitolite/install -ln ${git_dir}/bin" creates=${git_dir}/bin/gitolite
+      #command: /usr/local/src/gitolite/install -ln ${git_dir}/bin creates=${git_dir}/bin/gitolite
+      #sudo_user: git
 
     - name: Gitolite | Setup gitolite with root's key
-      command: ${git_dir}/bin/gitolite setup -pk /tmp/root.pub
-      sudo_user: git
+      shell: su - git -c "bin/gitolite setup -pk /tmp/root.pub" creates=${git_dir}/repositories/gitolite-admin.git/index
+      #command: ${git_dir}/bin/gitolite setup -pk /tmp/root.pub creates=${git_dir}/repositories/gitolite-admin.git/index
+      #sudo_user: git
+
+    - name: Gitolite | Clone the gitolite-admin repo to root
+      git: repo=git@localhost:gitolite-admin dest=/root/gitolite-admin
+
