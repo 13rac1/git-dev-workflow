@@ -38,14 +38,10 @@
         - unzip
         - curl
         - makepasswd
+        - ufw
 
     ##
-    # Drush install, a Drupal shell tool.
-    #
-    - include: tasks/ubuntu-drush.yml
-
-    ##
-    # Create the basic users, git to own the repos, and a regular user.
+    # Setup user accounts.
     #
     - name: Users | Generate password for git user
       shell: makepasswd --chars=20
@@ -64,29 +60,45 @@
       shell: ssh-keyscan -t rsa localhost >> /root/.ssh/known_hosts
 
     ##
-    # Install the Gitolite Git repository access manager
+    # Configure Apache
     #
-    - name: Gitolite | Copy root key to /tmp
-      copy: src=/root/.ssh/id_rsa.pub dest=/tmp/root.pub owner=root group=root mode=644
+    - name: Apache | Enable mod_expires
+      command: a2enmod expires creates=/etc/apache2/mods-enabled/expires.load
+    - name: Apache | Enable mod_rewrite
+      command: a2enmod rewrite creates=/etc/apache2/mods-enabled/rewrite.load
 
-    - name: Gitolite | Create bin directory for the git user
-      file: path=${git_dir}/bin state=directory owner=git group=git
+    ##
+    # Configuration for sshd
+    #
+    - name: sshd | Install /etc/ssh/sshd_config 
+      copy: src=files/etc-ssh-sshd_config dest=/etc/ssh/sshd_config
 
-    - name: Gitolite | Clone Gitolite repository
-      git: repo=https://github.com/sitaramc/gitolite.git dest=${git_dir}/gitolite version=v3.4
-      sudo_user: git
-      sudo: yes
+    ##
+    # Configure git for root user
+    #
+    - name: git | Enable git diff color
+      shell: git config --global color.diff always
 
-    - name: Gitolite | Install gitolite
-      command: ${git_dir}/gitolite/install -ln ${git_dir}/bin creates=${git_dir}/bin/gitolite
-      sudo_user: git
-      sudo: yes
+    - name: git | Set username
+      shell: git config --global user.name "${project_name} root"
 
-    - name: Gitolite | Setup gitolite with root's key
-      command: ${git_dir}/bin/gitolite setup -pk /tmp/root.pub creates=${git_dir}/repositories/gitolite-admin.git/index
-      sudo_user: git
-      sudo: yes
+    - name: git | Set email
+      shell: git config --global user.email "root@${project_url_live}"
 
-    - name: Gitolite | Clone the gitolite-admin repo to root
-      git: repo=git@localhost:gitolite-admin dest=/root/gitolite-admin
+    ##
+    # Drush install, a Drupal shell tool.
+    #
+    - include: tasks/ubuntu-drush.yml
 
+    ##
+    # Gitolite install
+    #
+    - include: tasks/gitolite.yml
+
+    ##
+    # Restart/Reload all modified services
+    #
+    - name: Restart | Reload ssh
+      service: name=ssh state=reloaded
+    - name: Restart | Restart Apache
+      service: name=apache2 state=reloaded

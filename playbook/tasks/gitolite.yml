@@ -1,0 +1,29 @@
+---
+##
+#
+# Install the Gitolite Git repository access manager
+#
+- name: Gitolite | Copy root key to /tmp
+  copy: src=/root/.ssh/id_rsa.pub dest=/tmp/root.pub owner=root group=root mode=644
+
+- name: Gitolite | Create bin directory for the git user
+  file: path=${git_dir}/bin state=directory owner=git group=git
+
+- name: Gitolite | Clone Gitolite repository
+  git: repo=https://github.com/sitaramc/gitolite.git dest=${git_dir}/gitolite version=v3.4
+  sudo_user: git
+  sudo: yes
+
+- name: Gitolite | Install gitolite
+  command: ${git_dir}/gitolite/install -ln ${git_dir}/bin creates=${git_dir}/bin/gitolite
+  sudo_user: git
+  sudo: yes
+
+- name: Gitolite | Setup gitolite with root's key
+  command: ${git_dir}/bin/gitolite setup -pk /tmp/root.pub creates=${git_dir}/repositories/gitolite-admin.git/index
+  sudo_user: git
+  sudo: yes
+
+- name: Gitolite | Clone the gitolite-admin repo to root
+  git: repo=git@localhost:gitolite-admin dest=/root/gitolite-admin
+

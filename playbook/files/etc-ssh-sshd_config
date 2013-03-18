@@ -1,0 +1,4 @@
+PubkeyAuthentication yes
+RSAAuthentication yes
+ChallengeResponseAuthentication no
+PasswordAuthentication no
