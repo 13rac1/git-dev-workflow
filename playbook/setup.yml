@@ -37,6 +37,7 @@
         - make
         - unzip
         - curl
+        - makepasswd
 
     ##
     # Drush install, a Drupal shell tool.
@@ -53,26 +54,23 @@
     - name: Users | Create git user
       user: name=git createhome=yes home=$git_dir generate_ssh_key=yes shell=/bin/bash password=${git_password.stdout}
 
-    #- name: Users | Create regular user
-    #  user: name=${user_account} createhome=yes home=/home/${user_account} generate_ssh_key=yes shell=/bin/bash
+    - name: Users | Generate SSH Key for root
+      command: ssh-keygen -b 4096 -t rsa -f /root/.ssh/id_rsa -P "" creates=/root/.ssh/id_rsa
+
+    - name: Users | Remove localhost from known_hosts, if it exists
+      shell: ssh-keygen -R localhost
+
+    - name: Users | Add localhost to known_hosts
+      shell: ssh-keyscan -t rsa localhost >> /root/.ssh/known_hosts
 
     ##
     # Install the Gitolite Git repository access manager
     #
-    - name: Gitolite | Automatic generate SSH Key for root
-      command: ssh-keygen -b 4096 -t rsa -f /root/.ssh/id_rsa -P "" creates=/root/.ssh/id_rsa
-
-    - name: Gitolite | Remove localhost from known_hosts
-      shell: ssh-keygen -R localhost
-
-    - name: Gitolite | Add localhost to known_hosts
-      shell: ssh-keyscan -t rsa localhost >> /root/.ssh/known_hosts
-
     - name: Gitolite | Copy root key to /tmp
       copy: src=/root/.ssh/id_rsa.pub dest=/tmp/root.pub owner=root group=root mode=644
 
     - name: Gitolite | Create bin directory for the git user
-      file: path=$git_dir/bin state=directory owner=git group=git
+      file: path=${git_dir}/bin state=directory owner=git group=git
 
     - name: Gitolite | Clone Gitolite repository
       git: repo=https://github.com/sitaramc/gitolite.git dest=${git_dir}/gitolite version=v3.4
