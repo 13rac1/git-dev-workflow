@@ -9,11 +9,10 @@ project_domain_test: 'test.example.com'
 project_domain_live: 'example.com'
 
 # php.ini
-php_memory_limit: '256M' 
+php_memory_limit: '256M'
 php_max_execution_time: '90'
 php_post_max_size: '32M'
 php_upload_max_filesize: '32M'
-php_date_timezone: 'America/Los_Angeles'
 
 # apc.ini
 apc_rfc1867: '1'

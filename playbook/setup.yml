@@ -84,8 +84,6 @@
     ##
     # Configure PHP
     #
-    - name: PHP | PHP configuration file for CLI
-      template: src=templates/etc-php5-cli-php.ini.j2 dest=/etc/php5/cli/php.ini backup=yes
     - name: PHP | PHP configuration file for Apache2
       template: src=templates/etc-php5-apache2-php.ini.j2 dest=/etc/php5/apache2/php.ini backup=yes
     - name: PHP | Configure APC
