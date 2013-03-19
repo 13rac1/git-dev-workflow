@@ -3,24 +3,22 @@
 
 # General settings (Change these!)
 project_name: 'project'
-project_url_dev: 'dev.example.com'
-project_url_test: 'test.example.com'
-# Without the www, it will be added.
-project_url_live: 'example.com'
+project_domain_dev: 'dev.example.com'
+project_domain_test: 'test.example.com'
+# Site domain without the www, it will be added.
+project_domain_live: 'example.com'
 
 # php.ini
+php_memory_limit: '256M' 
 php_max_execution_time: '90'
-php_display_errors: 'On'
-php_display_startup_errors: 'On'
-php_html_errors: 'On'
 php_post_max_size: '32M'
 php_upload_max_filesize: '32M'
 php_date_timezone: 'America/Los_Angeles'
-php_cgi_fix_pathinfo: '0'
-php_short_open_tag: 'Off'
 
 # apc.ini
 apc_rfc1867: '1'
-apc_shm_size: '96M'
+apc_shm_size: '64M'
 apc_shm_segments: '1'
 apc_num_files_hint: '0'
+
+# my.cnf

@@ -68,6 +68,16 @@
       command: a2enmod rewrite creates=/etc/apache2/mods-enabled/rewrite.load
 
     ##
+    # Configure PHP
+    #
+    - name: PHP-FPM | PHP configuration file for CLI
+      template: src=templates/etc-php5-cli-php.ini.j2 dest=/etc/php5/cli/php.ini
+    - name: PHP-FPM | PHP configuration file for Apache2
+      template: src=templates/etc-php5-apache2-php.ini.j2 dest=/etc/php5/apache2/php.ini
+    - name: PHP | Configure APC
+      template: src=templates/etc-php5-conf.d-apc.ini.j2 dest=/etc/php5/conf.d/apc.ini
+
+    ##
     # Configuration for sshd
     #
     - name: sshd | Install /etc/ssh/sshd_config 
@@ -83,7 +93,19 @@
       shell: git config --global user.name "${project_name} root"
 
     - name: git | Set email
-      shell: git config --global user.email "root@${project_url_live}"
+      shell: git config --global user.email "root@${project_domain_live}"
+
+    ##
+    # Configure the ufw firewall
+    #
+    - name: ufw | Allow SSH
+      command: ufw allow 22
+
+    - name: ufw | Allow HTTP
+      command: ufw allow 80
+
+    - name: ufw | Enable
+      command: ufw enable
 
     ##
     # Drush install, a Drupal shell tool.

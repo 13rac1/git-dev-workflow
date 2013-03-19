@@ -55,5 +55,5 @@ Install
 
 Todo
 ----
-1. Use Xginx with PHP-FPM.
-2. Add additional security
+1. Use Xginx with PHP-FPM optionally instead of Apache.
+2. Add additional security.
