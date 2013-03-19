@@ -59,6 +59,7 @@
       # https://github.com/ansible/ansible/issues/1665 sudo_user doesn't work with variables in 1.0.
     - name: Users | Remove localhost from project_name user known_hosts, if it exists
       shell: su - ${project_name} -c "ssh-keygen -R localhost"
+      ignore_errors: yes      
       #sudo_user: ${project_name}
       #sudo: yes
 
@@ -68,6 +69,7 @@
       #sudo: yes
 
     - name: Users | Remove localhost from root known_hosts, if it exists
+      ignore_errors: yes
       shell: ssh-keygen -R localhost
 
     - name: Users | Add localhost to root known_hosts
