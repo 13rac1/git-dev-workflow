@@ -1,4 +1,6 @@
 PubkeyAuthentication yes
 RSAAuthentication yes
 ChallengeResponseAuthentication no
-PasswordAuthentication no
+
+# Set to no to disable password logins. Recommended for better security.
+PasswordAuthentication yes

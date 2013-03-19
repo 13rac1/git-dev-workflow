@@ -70,18 +70,18 @@
     ##
     # Configure PHP
     #
-    - name: PHP-FPM | PHP configuration file for CLI
-      template: src=templates/etc-php5-cli-php.ini.j2 dest=/etc/php5/cli/php.ini
-    - name: PHP-FPM | PHP configuration file for Apache2
-      template: src=templates/etc-php5-apache2-php.ini.j2 dest=/etc/php5/apache2/php.ini
+    - name: PHP | PHP configuration file for CLI
+      template: src=templates/etc-php5-cli-php.ini.j2 dest=/etc/php5/cli/php.ini backup=yes
+    - name: PHP | PHP configuration file for Apache2
+      template: src=templates/etc-php5-apache2-php.ini.j2 dest=/etc/php5/apache2/php.ini backup=yes
     - name: PHP | Configure APC
-      template: src=templates/etc-php5-conf.d-apc.ini.j2 dest=/etc/php5/conf.d/apc.ini
+      template: src=templates/etc-php5-conf.d-apc.ini.j2 dest=/etc/php5/conf.d/apc.ini backup=yes
 
     ##
     # Configuration for sshd
     #
     - name: sshd | Install /etc/ssh/sshd_config 
-      copy: src=files/etc-ssh-sshd_config dest=/etc/ssh/sshd_config
+      copy: src=files/etc-ssh-sshd_config dest=/etc/ssh/sshd_config backup=yes
 
     ##
     # Configure git for root user
@@ -120,7 +120,7 @@
     ##
     # Restart/Reload all modified services
     #
-    - name: Restart | Reload ssh
+    - name: Reload | Reload ssh
       service: name=ssh state=reloaded
-    - name: Restart | Restart Apache
+    - name: Reload | Reload Apache
       service: name=apache2 state=reloaded
