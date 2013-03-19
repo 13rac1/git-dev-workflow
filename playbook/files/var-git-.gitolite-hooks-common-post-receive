@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Get the current repo name
+if [ $(git rev-parse --is-bare-repository) = true ]; then
+  REPOSITORY=$(basename "$PWD")
+  REPOSITORY=${REPOSITORY%.git}
+else
+  REPOSITORY=$(basename $(readlink -nf "$PWD"/..))
+fi
+
+echo REPOSITORY: $REPOSITORY
+REPOSITORY_DIR=$PWD;
+# Expect /var/git/repositories/$REPOSITORY
+
+# Don't do anything else with the gitolite-admin repo
+if [ $REPOSITORY = 'gitolite-admin' ]
+then
+  exit 0
+fi
+
+#If dev clone exists, update it.
+if [ -d /var/www/$REPOSITORY/dev ]; then
+  cd /var/www/$REPOSITORY/dev
+  echo WWW DIRECTORY: $PWD
+
+  #GIT_DIR is . by default, so remove that.
+  unset GIT_DIR
+  umask 0022
+  # Record unwriteable files.
+  NOWRITEFILES=$(find * ! -perm -u+w)
+  if [ -n "$NOWRITEFILES" ]; then
+    # Change permission to writeable
+    chmod u+w $NOWRITEFILES
+  fi
+  # Clean the directory
+  git clean -d -f
+  # Reset the files
+  git reset --hard HEAD
+  # Get the changes
+  git pull -f
+  if [ -n "$NOWRITEFILES" ]; then
+    # Change permission back to unwritable
+    chmod u-w $NOWRITEFILES
+  fi
+fi

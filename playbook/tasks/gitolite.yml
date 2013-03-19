@@ -27,3 +27,41 @@
 - name: Gitolite | Clone the gitolite-admin repo to root
   git: repo=git@localhost:gitolite-admin dest=/root/gitolite-admin
 
+- name: Gitolite | Add the common post receive hook
+  copy: src=files/var-git-.gitolite-hooks-common-post-receive dest=${git_dir}/.gitolite/hooks/common/post-receive owner=git group=git mode=744
+
+- name: Gitolite | Add the gitolite conf
+  copy: src=files/gitolite-admin-conf-gitolite.conf dest=/root/gitolite-admin/conf/gitolite.conf
+
+- name: Gitolite | Create the repository conf directory
+  file: path=/root/gitolite-admin/conf/repositories state=directory
+
+- name: Gitolite | Add the repository conf
+  template: src=templates/gitolite-admin-conf-repositories-project.conf.j2 dest=/root/gitolite-admin/conf/repositories/${project_name}.conf
+
+- name: Gitolite | Create the user conf directory
+  file: path=/root/gitolite-admin/conf/users state=directory
+
+- name: Gitolite | Add the project_name user conf
+  template: src=templates/gitolite-admin-conf-users-project.conf.j2 dest=/root/gitolite-admin/conf/users/${project_name}.conf
+
+- name: Gitolite | Add the project_name user public key
+  copy: src=/home/${project_name}/.ssh/id_rsa.pub dest=/root/gitolite-admin/keydir/${project_name}.pub
+
+- name: Gitolite | Add all files
+  shell: git add . chdir=/root/gitolite-admin
+
+- name: Gitolite | Check for modified files before attempting to commit.
+  shell: git diff-index --quiet HEAD -- chdir=/root/gitolite-admin
+  register: gitolite_modified
+  ignore_errors: yes
+
+- name: Gitolite | Commit all changes
+  shell: git commit -m "Add project repo and project user via Ansible." chdir=/root/gitolite-admin
+  when_failed: ${gitolite_modified}
+
+# Make the repo and setup the user's access.
+- name: Gitolite | Push the changes to create the repo.
+  shell: git push chdir=/root/gitolite-admin
+  when_failed: ${gitolite_modified}
+
