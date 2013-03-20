@@ -1,6 +1,5 @@
 ---
 ##
-#
 # Install the Gitolite Git repository access manager
 #
 - name: Gitolite | Copy root key to /tmp

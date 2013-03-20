@@ -1,0 +1,25 @@
+---
+##
+# Setup irrelevant system colors 
+#
+- name: Colors | Enable git diff color for root
+  shell: git config --global color.diff always
+
+- name: Colors | Enable Bash prompt colors system-wide
+  copy: src=files/etc-bash.bashrc dest=/etc/bash.bashrc owner=root group=root mode=644 backup=yes
+
+- name: Colors | Enable Bash prompt colors for new users
+  copy: src=files/etc-skel-.bashrc dest=/etc/skel/.bashrc owner=root group=root mode=644
+
+- name: Colors | Set Bash prompt colors for root
+  copy: src=files/etc-skel-.bashrc dest=/root/.bashrc owner=root group=root mode=644 backup=yes
+
+- name: Colors | Enable Nano PHP/YML syntax highlighting
+  copy: src=files/etc-nanorc dest=/etc/nanorc owner=root group=root mode=644 backup=yes
+
+- name: Colors | Adjust PHP syntax highlighting to support Drupal files
+  copy: src=files/usr-share-nano-php.nanorc dest=/usr/share/nano/php.nanorc owner=root group=root mode=644 backup=yes
+
+- name: Colors | Create YML syntax highlighting
+  copy: src=files/usr-share-nano-yml.nanorc dest=/usr/share/nano/yml.nanorc owner=root group=root mode=644 backup=yes
+

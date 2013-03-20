@@ -1,0 +1,18 @@
+syntax "yaml" "\.(yml|yaml)$"
+
+color brightcyan "\<(true|false|null)\>"
+
+icolor magenta "[[:alnum:]]*:"
+icolor brightgreen "^[[:space:]]*[.0-9A-Z_]*:"
+
+color green "\:\s\&.*\s.*"
+color green "\:\s\*.*$"
+
+color brightyellow ""(\\.|[^\"])*"" "'(\\.|[^'])*'"
+
+color green "[[:space:]]+$"
+color brightred "#.*$"
+color brightblue "\-|\.|;|:|\{|\}|\|"
+
+color brightmagenta "\s[[:digit:]]*$"
+
