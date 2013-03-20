@@ -3,8 +3,14 @@
 
 # PROJECT CONFIGURATION OPTIONS
 
-# MySQL root password, defaults to blank
-mysql_root_password: ''
+# MySQL server hostname
+mysql_hostname: 'localhost'
+
+# Primary MySQL account username
+mysql_username: 'root'
+
+# Primary MySQL account password, 12.04LTS defaults to blank.
+mysql_password: ''
 
 # Project name is used extensively for the repo, directory and user name. Use a-z, 0-9, and - only.
 project_name: 'project'
