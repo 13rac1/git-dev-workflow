@@ -44,4 +44,4 @@
   mysql_user: name=${mysql_db_safe.stdout}_live priv=${mysql_db_safe.stdout}_live.*:ALL password=${project_db_password_live} host=${project_db_hostname} state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
 
 - name: MySQL | Create a Drupal setttings.php include file.
-  template: src=templates/var-git-project-project.settings.php.j2 dest=${www_dir}/${project_name}/${project_name}.settings.php
+  template: src=templates/var-git-project-project.settings.php.j2 dest=${www_dir}/${project_name}/gdw.settings.php

@@ -1,18 +1,27 @@
 <?php
 /**
- * Include file for use with GDW and Drupal 7. Add to the project settings.php with:
+ * Include file for use with GDW and Drupal 6/7. Add to the site's settings.php with:
  *
- * if (file_exists('../{{ project_name }}.settings.php')) {
- *   include '../{{ project_name }}.settings.php';
+ * if (file_exists('../gdw.settings.php')) {
+ *   include '../gdw.settings.php';
  * }
  *
  */
 
-// Get the last directory name in DRUPAL_ROOT
+// Get the major Drupal version number (6/7/8)
+$major_version = substr(VERSION, 0, 1);
+
+// Get the last directory name in DRUPAL_ROOT (dev/test/live)
 $environment = array_pop(explode('/', DRUPAL_ROOT));
 
-switch ($environment) {
-  case 'dev':
+switch ($major_verison . '-' . $environment) {
+  case '6-dev':
+    $db_url = 'mysqli://{{ mysql_db_safe.stdout }}_dev:{{ project_db_password_dev }}@{{ mysql_hostname }}/{{ mysql_db_safe.stdout }}_dev';
+  case '6-test':
+    $db_url = 'mysqli://{{ mysql_db_safe.stdout }}_test:{{ project_db_password_test }}@{{ mysql_hostname }}/{{ mysql_db_safe.stdout }}_test';
+  case '6-live':
+    $db_url = 'mysqli://{{ mysql_db_safe.stdout }}_live:{{ project_db_password_live }}@{{ mysql_hostname }}/{{ mysql_db_safe.stdout }}_live';
+  case '7-dev':
     $databases = array (
       'default' => array (
         'default' => array (
@@ -27,7 +36,7 @@ switch ($environment) {
       ),
     );
     break;
-  case 'test':
+  case '7-test':
     $databases = array (
       'default' => array (
         'default' => array (
@@ -42,7 +51,7 @@ switch ($environment) {
       ),
     );
     break;
-  case 'live':
+  case '7-live':
     $databases = array (
       'default' => array (
         'default' => array (

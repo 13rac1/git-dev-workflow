@@ -67,13 +67,20 @@ Install
         cp public-key.pub /root/gitolite-admin/keydir/username.pub
 
 11. Add a user conf to gitolite
-11. Clone the project repo. (details todo)
-12. Add the Drupal code to the repo and push it to update the dev environment. (details todo)
-13. Import the site database. (details todo)
-14. Copy all Drupal files to /var/www/PROJECT-NAME/dev/sites/default/files/ or whatever the
+12. Clone the project repo. (details todo)
+13. Add the Drupal code to the repo and push it to update the dev environment. (details todo)
+14. Add the database connection include to the the settings.php
+
+         // Added for GDW server
+         if (file_exists('../gdw.settings.php')) {
+           include '../gdw.settings.php';
+         }
+
+15. Import the site database. (details todo)
+16. Copy all Drupal files to /var/www/PROJECT-NAME/dev/sites/default/files/ or whatever the
     Drupal public files directory is. (details todo)
-15. Sync code/files/db to test and live. (details and scripts todo)
-16. Done?
+17. Sync code/files/db to test and live. (details and scripts todo)
+18. Done?
 
 
 Todo
