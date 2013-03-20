@@ -86,14 +86,16 @@
     ##
     # Configure git for root user
     #
-    - name: git | Enable git diff color
-      shell: git config --global color.diff always
-
     - name: git | Set username
       shell: git config --global user.name "${project_name} root"
 
     - name: git | Set email
       shell: git config --global user.email "root@${project_domain_live}"
+
+    ##
+    # Setup irrelevant system colors
+    #
+    - include: tasks/colors.yml
 
     ##
     # Gitolite install
