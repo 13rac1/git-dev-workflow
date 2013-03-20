@@ -55,7 +55,7 @@ Install
 
 8.  Save and close the settings file, then run the Ansible playbook:
 
-        ansible-playbook -c local setup.yml
+        ansible-playbook -c local install.yml
 
 9.  Add *dev.example.com*, *test.example.com*, *example.com*, and *www.example.com* entries
     to your local /etc/hosts file or your DNS system.
@@ -75,3 +75,4 @@ Todo
 2. Add additional security.
 3. Multiple projects per server.
 4. Support additional software in addition to Drupal.
+5. Revert changes with when_failed if apache configtest fails.
