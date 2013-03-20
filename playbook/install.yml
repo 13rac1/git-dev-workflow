@@ -44,7 +44,8 @@
     # Setup user accounts for git and the project owner.
     #
     - name: Users | Generate password for git/project user
-      shell: makepasswd --chars=20
+      # creates is not technically true, but works.
+      shell: makepasswd --chars=20 creates=$git_dir/.ssh/id_rsa
       register: make_password
 
     - name: Users | Create git user
@@ -83,6 +84,18 @@
       shell: ssh-keyscan -t rsa localhost >> /root/.ssh/known_hosts
 
     ##
+    # Configure git for root user
+    #
+    - name: git | Enable git diff color
+      shell: git config --global color.diff always
+
+    - name: git | Set username
+      shell: git config --global user.name "${project_name} root"
+
+    - name: git | Set email
+      shell: git config --global user.email "root@${project_domain_live}"
+
+    ##
     # Gitolite install
     #
     - include: tasks/gitolite.yml
@@ -101,22 +114,15 @@
       template: src=templates/etc-php5-conf.d-apc.ini.j2 dest=/etc/php5/conf.d/apc.ini backup=yes
 
     ##
-    # Configuration for sshd
+    # Configure sshd
     #
     - name: sshd | Install /etc/ssh/sshd_config 
       copy: src=files/etc-ssh-sshd_config dest=/etc/ssh/sshd_config backup=yes
 
     ##
-    # Configure git for root user
+    # Configure MySQL
     #
-    - name: git | Enable git diff color
-      shell: git config --global color.diff always
-
-    - name: git | Set username
-      shell: git config --global user.name "${project_name} root"
-
-    - name: git | Set email
-      shell: git config --global user.email "root@${project_domain_live}"
+    - include: tasks/mysql.yml
 
     ##
     # Configure the ufw firewall

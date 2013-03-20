@@ -16,6 +16,9 @@ Notes
   they will be deleted.
 * No user should ever manually modify or create files in any of the managed
   environments.
+* Run MySQLTuner: http://mysqltuner.pl/mysqltuner.pl 
+* Secure your MySQL, by running *mysql_secure_installation*.
+
 
 Terminology
 -----------
@@ -34,7 +37,7 @@ Install
 
 4.  Install ansible:
 
-        apt-get -y install git python-jinja2 python-yaml python-paramiko python-software-properties
+        apt-get -y install git python-jinja2 python-yaml python-paramiko python-software-properties python-mysqldb
         add-apt-repository -y ppa:rquillo/ansible/ubuntu
         apt-get update
         apt-get -y install ansible
@@ -71,8 +74,16 @@ Install
 
 Todo
 ----
-1. Use Xginx with PHP-FPM optionally instead of Apache.
+1. Optionally, use Xginx with PHP-FPM instead of Apache.
+2. Optionally, use Redis instead of Memcache.
 2. Add additional security.
 3. Multiple projects per server.
 4. Support additional software in addition to Drupal.
-5. Revert changes with when_failed if apache configtest fails.
+5. Apache optimizations.
+6. MySQL optimizations.
+7. Optionally, install Varnish.
+
+Warning
+-------
+This automated configration comes with absolutely no warranty. Further system security
+hardening is essential. You've been warned.

@@ -1,0 +1,60 @@
+<?php
+/**
+ * Include file for use with GDW and Drupal 7. Add to the project settings.php with:
+ *
+ * if (file_exists('../project.settings.php') {
+ *   include file_exists('../project.settings.php';
+ * }
+ *
+ */
+
+// Get the last directory name in DRUPAL_ROOT
+$environment = array_pop(explode('/', DRUPAL_ROOT));
+
+switch ($environment) {
+  case 'dev':
+    $databases = array (
+      'default' => array (
+        'default' => array (
+          'database' => '{{ mysql_db_safe.stdout }}_dev',
+          'username' => '{{ mysql_db_safe.stdout }}_dev',
+          'password' => '{{ project_db_password_dev }}',
+          'host' => 'localhost',
+          'port' => '',
+          'driver' => 'mysql',
+          'prefix' => '',
+        ),
+      ),
+    );
+    break;
+  case 'test':
+    $databases = array (
+      'default' => array (
+        'default' => array (
+          'database' => '{{ mysql_db_safe.stdout }}_test',
+          'username' => '{{ mysql_db_safe.stdout }}_test',
+          'password' => '{{ project_db_password_test }}',
+          'host' => 'localhost',
+          'port' => '',
+          'driver' => 'mysql',
+          'prefix' => '',
+        ),
+      ),
+    );
+    break;
+  case 'live':
+    $databases = array (
+      'default' => array (
+        'default' => array (
+          'database' => '{{ mysql_db_safe.stdout }}_live',
+          'username' => '{{ mysql_db_safe.stdout }}_live',
+          'password' => '{{ project_db_password_live }}',
+          'host' => 'localhost',
+          'port' => '',
+          'driver' => 'mysql',
+          'prefix' => '',
+        ),
+      ),
+    );
+    break;
+}

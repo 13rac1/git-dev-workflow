@@ -1,0 +1,47 @@
+---
+##
+# MySQL configuration
+#
+
+# Ansible doesn't seem to be reading the .my.cnf correctly, so values will
+# be set in the settings.yml
+
+#- name: MySQL | Generate password for root
+#  shell: makepasswd --chars=20 creates=/root/.my.cnf
+#  register: root_mysql_password
+
+#- name: MySQL | Set a root user password
+#  mysql_user: user=root password=${root_mysql_password.stdout}
+#  only_if: is_set('${root_mysql_password.stdout}')
+
+#- name: MySQL | Create /root/.my.cnf if a root password has been generated.
+#  template: src=templates/root-.my.cnf.j2 dest=/root/.my.cnf
+#  only_if: is_set('${root_mysql_password.stdout}')
+
+# Cuts project name to 11 characters to fit the 16 charactor MySQL username limit.
+# Converts - to _ since has inconsistent support of dashes/hyphen.
+# May needs more work.
+- name: Generate safe MySQL database name.
+  shell: echo ${project_name} | cut -c1-11 | sed "s/-/_/g"
+  register: mysql_db_safe
+
+- name: MySQL | Create a project_name_dev database.
+  mysql_db: db=${mysql_db_safe.stdout}_dev state=present login_user=root login_password=${mysql_root_password}
+
+- name: MySQL | Create a project_name_dev user.
+  mysql_user: name=${mysql_db_safe.stdout}_dev priv=${mysql_db_safe.stdout}_dev.*:ALL password=${project_db_password_dev} state=present login_user=root login_password=${mysql_root_password}
+
+- name: MySQL | Create a project_name_test database.
+  mysql_db: db=${mysql_db_safe.stdout}_test state=present login_user=root login_password=${mysql_root_password}
+
+- name: MySQL | Create a project_name_test user.
+  mysql_user: name=${mysql_db_safe.stdout}_test priv=${mysql_db_safe.stdout}_test.*:ALL password=${project_db_password_test} state=present login_user=root login_password=${mysql_root_password}
+
+- name: MySQL | Create a project_name_live database.
+  mysql_db: db=${mysql_db_safe.stdout}_live state=present login_user=root login_password=${mysql_root_password}
+
+- name: MySQL | Create a project_name_live user.
+  mysql_user: name=${mysql_db_safe.stdout}_live priv=${mysql_db_safe.stdout}_live.*:ALL password=${project_db_password_live} state=present login_user=root login_password=${mysql_root_password}
+
+- name: MySQL | Create a Drupal setttings.php include file.
+  template: src=templates/var-git-project-project.settings.php.j2 dest=${www_dir}/${project_name}/${project_name}.settings.php

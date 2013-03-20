@@ -3,7 +3,10 @@
 
 # PROJECT CONFIGURATION OPTIONS
 
-# Project name is used extensively for the repo, directory and user name.
+# MySQL root password, defaults to blank
+mysql_root_password: ''
+
+# Project name is used extensively for the repo, directory and user name. Use a-z, 0-9, and - only.
 project_name: 'project'
 
 # Email address administrative emails should go to.
