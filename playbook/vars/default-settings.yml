@@ -39,6 +39,9 @@ project_db_password_test: 'ChangeThisPassword'
 # Password for user project_name_live on project_name_live database
 project_db_password_live: 'ChangeThisPassword'
 
+# The directory within Drupal root containing the files directory.
+project_files: 'sites/default/files'
+
 # SERVICE CONFIGURATION OPTIONS
 
 # apache HTTP port. Set 8080 for Varnish and modify /etc/apache2/ports.conf 

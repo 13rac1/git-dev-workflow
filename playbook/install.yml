@@ -108,6 +108,12 @@
     - include: tasks/apache.yml
 
     ##
+    # Configure user sudo
+    #
+    - name: User Sudo | Setup project_name user sudo as git/www-data
+      template: src=templates/etc-sudoers.d-project.j2 dest=/etc/sudoers.d/${project_name}
+
+    ##
     # Configure PHP
     #
     - name: PHP | PHP configuration file for Apache2

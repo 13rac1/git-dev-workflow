@@ -1,0 +1,7 @@
+# Give {{ project_name }} account ability to sudo specific commands for updating the dev/test/live environments
+
+# Updating the code for specific environments
+{{ project_name }}    ALL=(git) NOPASSWD: /usr/bin/git --work-tree={{ www_dir }}/{{ project_name }}/[A-Za-z]* --git-dir={{ www_dir }}/{{ project_name }}/[A-Za-z]* pull origin [A-Za-z]*
+
+# Copying the file data (temporary; final scripts to use rsync.)
+{{ project_name }}    ALL=(www-data) NOPASSWD: /bin/cp -R {{ www_dir }}/{{ project_name }}/[A-Za-z/]* {{ www_dir }}/{{ project_name }}/[A-Za-z/]*
