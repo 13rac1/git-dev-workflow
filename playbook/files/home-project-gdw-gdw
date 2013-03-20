@@ -1,0 +1,98 @@
+#!/bin/bash
+# GDW project_name user script for updating/syncing the Drupal dev/test/live environments
+# TODO: Write in Python?
+
+# Exit on any error
+set -e
+
+function help {
+  echo "
+GDW user script
+Usage: gdw COMMAND [ENVIRONMENT/OBJECT] [SOURCE] [DESTINATION]
+
+Commands:
+update - Update an environment (dev/test/live).
+sync - Sync an object(db/files) from a source to a destination.
+pull - Update the code for an environment.
+"
+  exit 1
+}
+
+function sync {
+  ACTION=$1
+  SRC=$2
+  DEST=$3
+  #TODO: Error checking.
+
+  case "$ACTION" in
+    files)
+      # Update the files directory from live
+      echo "Updating the public files directory"
+      sudo -u www-data cp -R /var/www/test-project/$SRC/sites/default/files /var/www/test-project/$DEST/sites/default/files
+    ;;
+    db)
+      # Update the database from live
+      echo "Updating the database"
+      nice -n 10 ionice -c2 -n7 /usr/bin/mysqldump --host=localhost --user=test_projec_live --password=ChangeThisPassword test_projec_live \
+      | nice -n 10 ionice -c2 -n7 /usr/bin/mysql --host=localhost --user=test_projec_test --password=ChangeThisPassword test_projec_test
+    ;;
+  esac
+}
+
+function pull {
+  ENVIRONMENT=$1
+  # Update the code from the repo/dev
+  echo "Updating the $ENVIRONMENT code"
+  sudo -u git git --work-tree=/var/www/test-project/$ENVIRONMENT --git-dir=/var/www/test-project/$ENVIRONMENT/.git/ pull origin master
+
+  # Run the Drupal database update script
+  echo "Running the Drupal database update script"
+  #sudo -u www-data drush -y -r /var/www/test-project/test -l http://test.example.com updb
+}
+
+function update {
+  ENVIRONMENT=$1
+  if [ -z "$ENVIRONMENT" ]; then
+    echo "Environment required use update"
+    help
+  fi
+  case "$ENVIRONMENT" in
+    dev)
+      echo "Updating the development environment"
+      sync db live dev
+      sync files live dev
+    ;;
+    test)
+      echo "Updating the testing environment"
+      sync db live test
+      sync files live test
+      pull test
+    ;;
+    live)
+      echo "Updating the live environment"
+      pull live
+    ;;
+  esac
+}
+
+COMMAND=$1
+
+if [ -z "$COMMAND" ]; then
+  echo "Command required"
+  help
+fi
+
+case "$COMMAND" in
+  update)
+    update $2
+  ;;
+  sync)
+    sync $2 $3 $4
+  ;;
+  pull)
+    pull $2
+  ;;
+esac
+
+echo Done.
+
