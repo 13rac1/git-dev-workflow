@@ -1,12 +1,36 @@
 # Default settings
 ---
 
-# General settings (Change these!)
+# PROJECT CONFIGURATION OPTIONS
+
+# Project name is used extensively for the repo, directory and user name.
 project_name: 'project'
+
+# Email address administrative emails should go to.
+project_email: 'user@example.com'
+
+# Domain name for the development environment
 project_domain_dev: 'dev.example.com'
+
+# Domain name for the test/staging environment
 project_domain_test: 'test.example.com'
-# Site domain without the www, it will be added.
+
+# Domain name for the live environment. Leave out the www. It will be added.
 project_domain_live: 'example.com'
+
+# Password for user project_name_dev on project_name_dev database
+project_db_password_dev: 'ChangeThisPassword'
+
+# Password for user project_name_test on project_name_test database
+project_db_password_test: 'ChangeThisPassword'
+
+# Password for user project_name_live on project_name_live database
+project_db_password_live: 'ChangeThisPassword'
+
+# SERVICE CONFIGURATION OPTIONS
+
+# apache HTTP port. Set 8080 for Varnish and modify /etc/apache2/ports.conf 
+apache_http_port: '80'
 
 # php.ini
 php_memory_limit: '256M'

@@ -18,7 +18,7 @@
     ##
     # Installation of required software.
     #
-    - name: All | Install required packages.
+    - name: Install | Install required packages.
       apt: pkg=$item state=installed
       with_items:
         - apache2
@@ -68,6 +68,13 @@
       #sudo_user: ${project_name}
       #sudo: yes
 
+    - name: Users | Remove localhost from git user known_hosts, if it exists
+      shell: su - git -c "ssh-keygen -R localhost"
+      ignore_errors: yes      
+
+    - name: Users | Add localhost to git known_hosts
+      shell: su - git -c "ssh-keyscan -t rsa localhost >> ${git_dir}/.ssh/known_hosts"
+
     - name: Users | Remove localhost from root known_hosts, if it exists
       ignore_errors: yes
       shell: ssh-keygen -R localhost
@@ -76,12 +83,14 @@
       shell: ssh-keyscan -t rsa localhost >> /root/.ssh/known_hosts
 
     ##
+    # Gitolite install
+    #
+    - include: tasks/gitolite.yml
+
+    ##
     # Configure Apache
     #
-    - name: Apache | Enable mod_expires
-      command: a2enmod expires creates=/etc/apache2/mods-enabled/expires.load
-    - name: Apache | Enable mod_rewrite
-      command: a2enmod rewrite creates=/etc/apache2/mods-enabled/rewrite.load
+    - include: tasks/apache.yml
 
     ##
     # Configure PHP
@@ -124,12 +133,7 @@
     ##
     # Drush install, a Drupal shell tool.
     #
-    - include: tasks/ubuntu-drush.yml
-
-    ##
-    # Gitolite install
-    #
-    - include: tasks/gitolite.yml
+    - include: tasks/drush.yml
 
     ##
     # Restart/Reload all modified services

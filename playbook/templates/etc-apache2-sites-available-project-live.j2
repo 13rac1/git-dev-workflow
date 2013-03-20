@@ -1,0 +1,26 @@
+<VirtualHost *:{{ apache_http_port }}>
+	ServerAdmin {{ project_email }}
+	ServerName {{ project_domain_live }}
+	ServerAlias www.{{ project_domain_live }}
+
+	DocumentRoot /var/www/{{ project_name }}/live
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+	<Directory /var/www/{{ project_name }}/live>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride All
+		Order allow,deny
+		allow from all
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error-{{ project_name }}-live.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog ${APACHE_LOG_DIR}/access-{{ project_name }}-live.log combined
+
+</VirtualHost>

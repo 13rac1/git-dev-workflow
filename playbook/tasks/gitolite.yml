@@ -27,6 +27,11 @@
 - name: Gitolite | Clone the gitolite-admin repo to root
   git: repo=git@localhost:gitolite-admin dest=/root/gitolite-admin
 
+##
+#
+# Configure the Gitolite Git repository access manager
+#
+
 - name: Gitolite | Add the common post receive hook
   copy: src=files/var-git-.gitolite-hooks-common-post-receive dest=${git_dir}/.gitolite/hooks/common/post-receive owner=git group=git mode=744
 
@@ -36,11 +41,14 @@
 - name: Gitolite | Create the repository conf directory
   file: path=/root/gitolite-admin/conf/repositories state=directory
 
-- name: Gitolite | Add the repository conf
+- name: Gitolite | Add the repository conf directory.
   template: src=templates/gitolite-admin-conf-repositories-project.conf.j2 dest=/root/gitolite-admin/conf/repositories/${project_name}.conf
 
-- name: Gitolite | Create the user conf directory
+- name: Gitolite | Create the user conf directory.
   file: path=/root/gitolite-admin/conf/users state=directory
+
+- name: Gitolite | Add the git user public key for read only access to pull repos.
+  copy: src=${git_dir}/.ssh/id_rsa.pub dest=/root/gitolite-admin/keydir/git.pub
 
 - name: Gitolite | Add the project_name user conf
   template: src=templates/gitolite-admin-conf-users-project.conf.j2 dest=/root/gitolite-admin/conf/users/${project_name}.conf
@@ -57,7 +65,7 @@
   ignore_errors: yes
 
 - name: Gitolite | Commit all changes
-  shell: git commit -m "Add project repo and project user via Ansible." chdir=/root/gitolite-admin
+  shell: git commit -m "Add ${project_name} repo and user via Ansible." chdir=/root/gitolite-admin
   when_failed: ${gitolite_modified}
 
 # Make the repo and setup the user's access.
@@ -65,3 +73,33 @@
   shell: git push chdir=/root/gitolite-admin
   when_failed: ${gitolite_modified}
 
+##
+#
+# Setup the environment repos
+#
+
+- name: Gitolite | Create a directory for the dev environment
+  file: path=${www_dir}/${project_name}/dev state=directory owner=git group=git mode=755
+
+- name: Gitolite | Create a directory for the test environment
+  file: path=${www_dir}/${project_name}/test state=directory owner=git group=git mode=755
+
+- name: Gitolite | Create a directory for the live environment
+  file: path=${www_dir}/${project_name}/live state=directory owner=git group=git mode=755
+
+- name: Gitolite | Clone the repo into the dev directory
+  # Ansible git module fails cloning empty repos, but probably shouldn't. Related: https://github.com/ansible/ansible/pull/1864
+  #git: repo=git@localhost:${project_name} dest=${www_dir}/${project_name}/dev
+  shell: git clone git@localhost:${project_name} ${www_dir}/${project_name}/dev creates=${www_dir}/${project_name}/dev/.git/HEAD chdir=${git_dir}
+  sudo_user: git
+  sudo: yes
+
+- name: Gitolite | Clone the repo into the test directory
+  shell: git clone git@localhost:${project_name} ${www_dir}/${project_name}/test creates=${www_dir}/${project_name}/test/.git/HEAD chdir=${git_dir}
+  sudo_user: git
+  sudo: yes
+
+- name: Gitolite | Clone the repo into the live directory
+  shell: git clone git@localhost:${project_name} ${www_dir}/${project_name}/live creates=${www_dir}/${project_name}/live/.git/HEAD chdir=${git_dir}
+  sudo_user: git
+  sudo: yes
