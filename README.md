@@ -62,7 +62,11 @@ Install
 
 9.  Add *dev.example.com*, *test.example.com*, *example.com*, and *www.example.com* entries
     to your local /etc/hosts file or your DNS system.
-10. Add your public key and name to gitolite. (details todo)
+10. Add your public key to gitolite.
+
+        cp public-key.pub /root/gitolite-admin/keydir/username.pub
+
+11. Add a user conf to gitolite
 11. Clone the project repo. (details todo)
 12. Add the Drupal code to the repo and push it to update the dev environment. (details todo)
 13. Import the site database. (details todo)
