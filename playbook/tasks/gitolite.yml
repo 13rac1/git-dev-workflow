@@ -19,7 +19,7 @@
   sudo: yes
 
 - name: Gitolite | Setup gitolite with root's key
-  command: ${git_dir}/bin/gitolite setup -pk /tmp/root.pub creates=${git_dir}/repositories/gitolite-admin.git/index
+  command: ${git_dir}/bin/gitolite setup -pk /tmp/root.pub
   sudo_user: git
   sudo: yes
 

@@ -1,6 +1,7 @@
 ##
 # Ansible playbook for setting up a Git Drupal Development Workflow on an
 # Ubuntu 12.04 server.
+# Copyright (C) 2013 by Brad Erickson
 #
 
 ---
@@ -111,7 +112,7 @@
     # Configure user sudo
     #
     - name: User Sudo | Setup project_name user sudo as git/www-data
-      template: src=templates/etc-sudoers.d-project.j2 dest=/etc/sudoers.d/${project_name}
+      template: src=templates/etc-sudoers.d-project.j2 dest=/etc/sudoers.d/${project_name} mode=0440
 
     ##
     # Configure PHP
