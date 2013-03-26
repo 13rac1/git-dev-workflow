@@ -14,7 +14,7 @@
 - name: Colors | Set Bash prompt colors for root
   copy: src=files/etc-skel-.bashrc dest=/root/.bashrc owner=root group=root mode=644 backup=yes
 
-- name: Colors | Enable Nano PHP/YML syntax highlighting
+- name: Colors | Enable Nano YML syntax highlighting
   copy: src=files/etc-nanorc dest=/etc/nanorc owner=root group=root mode=644 backup=yes
 
 - name: Colors | Adjust PHP syntax highlighting to support Drupal files
