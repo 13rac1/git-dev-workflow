@@ -8,7 +8,7 @@ similar dev/test/live workflow, this script will set up nearly everything.
 Notes
 -----
 * This uses Ansible for configuration management.
-* It is designed for use with Ubuntu 12.04 LTS.
+* It is designed for use with Ubuntu 12.04 LTS and Ubuntu 12.10.
 * This initial version sets up dev/test/live environments for a single project
   only.
 * Git clean/reset is run on every environment update. All files must either be
@@ -37,7 +37,7 @@ Install
 
 4.  Install ansible:
 
-        apt-get -y install git python-jinja2 python-yaml python-paramiko python-software-properties python-mysqldb
+        apt-get -y install git python-jinja2 python-yaml python-paramiko python-software-properties python-mysqldb software-properties-common
         add-apt-repository -y ppa:rquillo/ansible/ubuntu
         apt-get update
         apt-get -y install ansible
