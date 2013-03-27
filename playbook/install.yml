@@ -41,6 +41,11 @@
         - ufw
 
     ##
+    # Setup irrelevant system colors
+    #
+    - include: tasks/colors.yml
+
+    ##
     # Setup user accounts for git and the project owner.
     #
     - name: Users | Generate password for git/project user
@@ -91,11 +96,6 @@
 
     - name: git | Set email
       shell: git config --global user.email "root@${project_domain_live}"
-
-    ##
-    # Setup irrelevant system colors
-    #
-    - include: tasks/colors.yml
 
     ##
     # Gitolite install

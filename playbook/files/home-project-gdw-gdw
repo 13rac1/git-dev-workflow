@@ -1,96 +1,163 @@
 #!/bin/bash
 # GDW project_name user script for updating/syncing the Drupal dev/test/live environments
-# TODO: Write in Python?
 
 # Exit on any error
 set -e
 
+# Load the project specific settings
+. $HOME/.gdw/gdw_settings
+
+# Help text to display on error.
 function help {
   echo "
-GDW user script
-Usage: gdw COMMAND [ENVIRONMENT/OBJECT] [SOURCE] [DESTINATION]
+GDW Project Owner Environment Update/Sync Script
+Copyright (C) 2013 by Brad Erickson
+
+Usage: gdw update ENVIRONMENT
+  or   gdw db SOURCE DESTINATION
+  or   gdw files SOURCE DESTINATION
+  or   gdw pull ENVIRONMENT [BRANCH]
 
 Commands:
-update - Update an environment (dev/test/live).
-sync - Sync an object(db/files) from a source to a destination.
-pull - Update the code for an environment.
+  update        Update an environment (dev/test/live). Most commonly used.
+  db            Sync the database from a source to a destination.
+  files         Sync the files from a source to a destination.
+  pull          Update the code in an environment.
+
+Options:
+  ENVIRONMENT   An environment: 'dev', 'test' or 'live'.
+  SOURCE        An environment: 'dev', 'test' or 'live'.
+  DESTINATION   An environment: 'dev', 'test' or 'live'.
+  BRANCH        The branch to use, defaults to 'master'.
+
 "
   exit 1
 }
 
-function sync {
-  ACTION=$1
-  SRC=$2
-  DEST=$3
-  #TODO: Error checking.
+# Error checking for db and files commands.
+function check_src_dest {
+  SRC=$1
+  DEST=$2
 
-  case "$ACTION" in
-    files)
-      # Update the files directory from live
-      echo "Updating the public files directory"
-      sudo -u www-data cp -R /var/www/test-project/$SRC/sites/default/files /var/www/test-project/$DEST/sites/default/files
-    ;;
-    db)
-      # Update the database from live
-      echo "Updating the database"
-      nice -n 10 ionice -c2 -n7 /usr/bin/mysqldump --host=localhost --user=test_projec_live --password=ChangeThisPassword test_projec_live \
-      | nice -n 10 ionice -c2 -n7 /usr/bin/mysql --host=localhost --user=test_projec_test --password=ChangeThisPassword test_projec_test
-    ;;
-  esac
+  if [ -z "$SRC" ]; then
+    echo "ERROR: Source environment required."
+    help
+  fi
+  if [ -z "$DEST" ]; then
+    echo "ERROR: Destination environment required."
+    help
+  fi
+
+  check_env_type $SRC
+  check_env_type $DEST
 }
 
-function pull {
-  ENVIRONMENT=$1
-  # Update the code from the repo/dev
-  echo "Updating the $ENVIRONMENT code"
-  sudo -u git git --work-tree=/var/www/test-project/$ENVIRONMENT --git-dir=/var/www/test-project/$ENVIRONMENT/.git/ pull origin master
+# Error checking for pull and update commands.
+function check_env {
+  ENV=$1
 
-  # Run the Drupal database update script
-  echo "Running the Drupal database update script"
+  if [ -z "$ENV" ]; then
+    echo "ERROR: Environment required."
+    help
+  fi
+
+  check_env_type $ENV
+}
+
+# Error checking to detect valid environment types.
+function check_env_type {
+  ENV=$1
+
+  if [ "$ENV" ]; then
+    echo "ERROR: Environment required."
+    help
+  fi
+}
+
+# Database sync command
+function command_db {
+  SRC=$1
+  DEST=$2
+  check_src_dest $SRC $DEST
+
+  echo "Updating the database"
+  nice -n 10 ionice -c2 -n7 /usr/bin/mysqldump --host=$MYSQL_HOST --user=$MYSQL_USER_SRC --password=$MYSQL_PASS_SRC $MYSQL_DB_SRC \
+  | nice -n 10 ionice -c2 -n7 /usr/bin/mysql --host=$MYSQL_HOST --user=$MYSQL_USER_DEST --password=$MYSQL_PASS_DEST $MYSQL_DB_DEST
+}
+
+# File sync command
+function command_files {
+  SRC=$1
+  DEST=$2
+  check_src_dest $SRC $DEST
+
+  echo "Updating the public files directory"
+  sudo -u www-data cp -R /var/www/test-project/$SRC/sites/default/files /var/www/test-project/$DEST/sites/default/files
+}
+
+# Code pull command
+function command_pull {
+  ENV=$1
+  BRANCH=$2
+  check_env $ENV
+
+  # If branch is not set, set to the default
+  if [ -z "$BRANCH" ]; then
+    BRANCH=master
+  fi
+
+  echo "Updating the $ENV code using the $BRANCH branch"
+  sudo -u git git --work-tree=/var/www/test-project/$ENV --git-dir=/var/www/test-project/$ENV/.git/ pull origin $BRANCH
+
+  echo "Running the Drupal database update script on $ENV"
   #sudo -u www-data drush -y -r /var/www/test-project/test -l http://test.example.com updb
 }
 
-function update {
-  ENVIRONMENT=$1
-  if [ -z "$ENVIRONMENT" ]; then
-    echo "Environment required use update"
-    help
-  fi
-  case "$ENVIRONMENT" in
+# Primary workflow update commands.
+function command_update {
+  ENV=$1
+  check_env $ENV
+
+  case "$ENV" in
     dev)
       echo "Updating the development environment"
-      sync db live dev
-      sync files live dev
+      command_db live dev
+      command_files live dev
     ;;
     test)
       echo "Updating the testing environment"
-      sync db live test
-      sync files live test
-      pull test
+      command_db live test
+      command_files live test
+      command_pull test
     ;;
     live)
       echo "Updating the live environment"
-      pull live
+      command_pull live
     ;;
   esac
 }
 
-COMMAND=$1
 
+# Main script start
+COMMAND=$1
 if [ -z "$COMMAND" ]; then
-  echo "Command required"
+  echo "Command required."
   help
 fi
 
+# Call the funtion for the specified command
 case "$COMMAND" in
   update)
-    update $2
+    command_update $2
   ;;
-  sync)
-    sync $2 $3 $4
+  db)
+    command_db $2 $3
+  ;;
+  files)
+    command_files $2 $3
   ;;
   pull)
-    pull $2
+    command_pull $2
   ;;
 esac
 
