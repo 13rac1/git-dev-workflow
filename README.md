@@ -207,6 +207,7 @@ Todo
 9.  Automate the dev user add process.
 10. Use factors to support CentOS.
 11. Fix clean/reset in the post-receive.
+12. Use rsync instead of cp for copying public files.
 
 Warning
 -------
