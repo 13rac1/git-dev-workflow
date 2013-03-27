@@ -29,12 +29,29 @@
   sudo_user: git
   sudo: yes
 
-#- name: Environments | Create the public files directory for dev
+- name: Environments | Create the public files directory and parents owned by git for dev
   # Ansible 1.0: If parent directories do not exist, they will be owned by root instead of specified owner.
-#  file: path=${www_dir}/${project_name}/dev/${project_files} state=directory owner=www-data group=www-data mode=755
+  # file: path=${www_dir}/${project_name}/dev/${project_files} state=directory owner=www-data group=www-data mode=755
+  shell: mkdir -p ${www_dir}/${project_name}/dev/${project_files}
+  sudo_user: git
+  sudo: yes
 
-#- name: Environments | Create the public files directory for test
-#  file: path=${www_dir}/${project_name}/test/${project_files} state=directory owner=www-data group=www-data mode=755
+- name: Environments | Chown the public files directory to www-data for dev
+  file: path=${www_dir}/${project_name}/dev/${project_files} state=directory owner=www-data group=www-data mode=755
 
-#- name: Environments | Create the public files directory for live
-#  file: path=${www_dir}/${project_name}/live/${project_files} state=directory owner=www-data group=www-data mode=755
+- name: Environments | Create the public files directory and parents owned by git for test
+  shell: mkdir -p ${www_dir}/${project_name}/test/${project_files}
+  sudo_user: git
+  sudo: yes
+
+- name: Environments | Chown the public files directory to www-data for test
+  file: path=${www_dir}/${project_name}/test/${project_files} state=directory owner=www-data group=www-data mode=755
+
+- name: Environments | Create the public files directory and parents owned by git for live
+  shell: mkdir -p ${www_dir}/${project_name}/live/${project_files}
+  sudo_user: git
+  sudo: yes
+
+- name: Environments | Chown the public files directory to www-data for live
+  file: path=${www_dir}/${project_name}/live/${project_files} state=directory owner=www-data group=www-data mode=755
+

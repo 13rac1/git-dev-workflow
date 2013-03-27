@@ -147,16 +147,19 @@ Install
         cp -R site-files/* /var/www/PROJECT-NAME/dev/sites/default/files/
         chown -R www-data:www-data /var/www/PROJECT-NAME/dev/sites/default/files
 
-16. Sync code/files/db from dev to test and live.
+16. If creating a new site, install Drupal by going to: http://DEV-DOMAIN.com/install.php
 
-        su - PROJECT-NAME -c gdw pull test
-        su - PROJECT-NAME -c gdw db dev test
-        su - PROJECT-NAME -c gdw files dev test
-        su - PROJECT-NAME -c gdw pull live
-        su - PROJECT-NAME -c gdw db dev live
-        su - PROJECT-NAME -c gdw files dev live
+17. Change to the project owner and sync code/db/files from dev to test/live.
 
-17. Test your sites!
+        su - PROJECT-NAME
+        gdw pull test
+        gdw db dev test
+        gdw files dev test
+        gdw pull live
+        gdw db dev live
+        gdw files dev live
+
+18. Test your sites!
 
 Create a developer user
 -----------------------
