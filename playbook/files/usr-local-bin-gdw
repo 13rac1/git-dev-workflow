@@ -167,7 +167,7 @@ function command_pull {
   sudo -u git git --work-tree=$WWW_DIR/$PROJECT_NAME/$ENV --git-dir=$WWW_DIR/$PROJECT_NAME/$ENV/.git/ pull origin $BRANCH
 
   echo "Running the Drupal database update script on $ENV"
-  sudo -u www-data drush updatedb -r $WWW_DIR/$PROJECT_NAME/$ENV -l http://$DOMAIN
+  sudo -u www-data drush -r $WWW_DIR/$PROJECT_NAME/$ENV -l http://$DOMAIN updatedb
 }
 
 # Primary workflow update commands.

@@ -7,4 +7,4 @@
 {{ project_name }}    ALL=(www-data) NOPASSWD: /bin/cp -R {{ www_dir }}/{{ project_name }}/[A-Za-z/]* {{ www_dir }}/{{ project_name }}/[A-Za-z/]*
 
 # Run Drush updatedb as the www-data user
-{{ project_name }}    ALL=(www-data) NOPASSWD: /usr/bin/drush updatedb -l [A-Za-z/\:]* -r {{ www_dir }}/{{ project_name }}/[A-Za-z/]*
+{{ project_name }}    ALL=(www-data) NOPASSWD: /usr/bin/drush -l [A-Za-z/\:]* -r {{ www_dir }}/{{ project_name }}/[A-Za-z/]* updatedb

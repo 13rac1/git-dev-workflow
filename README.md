@@ -2,8 +2,53 @@ Git Development Workflow
 ========================
 
 The Git-based Drupal website development workflow offered by Pantheon and
-Acquia is easy to use, but complex to setup on your own server. If need/want a
-similar dev/test/live workflow, this script will set up nearly everything.
+Acquia is easy to use, but complex to setup on your own server. This script
+will setup a similar dev/test/live workflow.
+
+WORKFLOW DESCRIPTION
+--------------------
+In this workflow, there are three environments setup on the server:
+
+* dev - The Development environment is used for all code development. As needed
+  Development is updated with the current database and files from the live
+  environment to keep it up to date.
+* test - The Testing environment is used to test changes and new
+  functionality. As needed, Testing is updated by getting the current code from
+  the git repository, and the current database and files from the live
+  environment.
+* live - The Live environment is the actual live environment for the website.
+  When tests have confirmed that the code/database/files work correctly
+  on Testing, then the code is updated.
+
+EXAMPLE
+-------
+The following is an overly cautious example of the workflow to add module and
+update the live instance from a local machine. Assumptions: The user's public
+key has already been added to gitolite by the root user.
+
+    # Get a clone of the project repository
+    git clone git@domain.com:example
+    # Change the directory
+    cd example
+    # Download Views
+    drush dl views
+    # Stage the Views module
+    git add sites/all/modules/contrib/views
+    # Commit the Views module
+    git commit -m "Add the Views module"
+    # Push the changes to the server, which automatically updates the
+    # development environment code: dev.example.com
+    git push
+    # SSH to the server as the example user and update the dev environment
+    # with the current live database and files.
+    ssh example@domain.com gdw update dev
+    # SSH to the server as the example user and run drush as the www-data user
+    # to enable the views module. Test!
+    ssh example@domain.com gdw-drush en views
+    # Update the test environment: test.example.com Test!
+    ssh example@domain.com gdw update test
+    # Update the live environment: www.example.com Test!
+    ssh example@domain.com gdw update live
 
 Notes
 -----
@@ -18,7 +63,8 @@ Notes
   environments.
 * Run MySQLTuner: http://mysqltuner.pl/mysqltuner.pl 
 * Secure your MySQL, by running *mysql_secure_installation*.
-
+* A Linux user with the same name as the project is created for each project.
+  All site management should be done with this user.
 
 Terminology
 -----------
@@ -62,26 +108,73 @@ Install
 
 9.  Add *dev.example.com*, *test.example.com*, *example.com*, and *www.example.com* entries
     to your local /etc/hosts file or your DNS system.
-10. Add your public key to gitolite.
+10. Clone the project repo to /root:
 
-        cp public-key.pub /root/gitolite-admin/keydir/username.pub
+        cd ~
+        git clone git@domain.com:example
 
-11. Add a user conf to gitolite
-12. Clone the project repo. (details todo)
-13. Add the Drupal code to the repo and push it to update the dev environment. (details todo)
-14. Add the database connection include to the the settings.php
+11. Add the Drupal code to the repo, commit everything, and push it to update
+    the dev environment. Adjust the .gitignore file as needed.
+12. Add the database connection include to the sites/default/settings.php file:
 
-         // Added for GDW server
-         if (file_exists('../gdw.settings.php')) {
-           include '../gdw.settings.php';
-         }
+        // Added for GDW server
+        if (file_exists('../gdw.settings.php')) {
+          include '../gdw.settings.php';
+        }
 
-15. Import the site database. (details todo)
-16. Copy all Drupal files to /var/www/PROJECT-NAME/dev/sites/default/files/ or whatever the
-    Drupal public files directory is. (details todo)
-17. Sync code/files/db to test and live. (details and scripts todo)
-18. Done?
+13. If importing a site, import the site database into the development
+    environment:
 
+        mysql PROJECT-NAME_dev < site.sql
+
+14. If importing a site, copy/move all Drupal files to the development
+    environment Drupal public files directory and be sure files are owned by
+    the www-data user:
+
+        cp -R site-files/* /var/www/PROJECT-NAME/dev/sites/default/files/
+        chown -R www-data:www-data /var/www/PROJECT-NAME/dev/sites/default/files
+
+15. Sync code/files/db from dev to test and live.
+
+        su - PROJECT-NAME -c gdw db dev test
+        su - PROJECT-NAME -c gdw files dev test
+        su - PROJECT-NAME -c gdw pull test
+        su - PROJECT-NAME -c gdw db dev live
+        su - PROJECT-NAME -c gdw files dev live
+        su - PROJECT-NAME -c gdw pull live
+
+16. Test your sites!
+
+Create a developer user
+-----------------------
+1. Add user's public key to gitolite:
+
+        cp user-public-key.pub /root/gitolite-admin/keydir/USERNAME.pub
+
+2. Copy the PROJECT-NAME conf to create a USERNAME conf in gitolite:
+
+        cd ~/gitolite-admin/conf/users
+        cp PROJECT-NAME.conf USERNAME.conf
+
+3. Edit the file contain the username of the user:
+
+        nano USERNAME.conf
+
+4. Add all changes to the repo, commit, and push:
+
+        cd ~/gitolite-admin
+        git add .
+        git commit -m "Add USERNAME"
+        git push
+
+5. Add the user's public key to the PROJECT-NAME user authorized keys:
+
+        nano /home/PROJECT-NAME/.ssh/authorized_keys
+
+6. Test the user! From their local machine:
+
+        git clone git@example.com:PROJECT-NAME
+        ssh PROJECT-NAME@example.com gdw update dev
 
 Todo
 ----
@@ -93,6 +186,8 @@ Todo
 5. Apache optimizations.
 6. MySQL optimizations.
 7. Optionally, install Varnish.
+8. Automate the existing site import and new site creation process.
+9. Automate the user add process.
 
 Warning
 -------
