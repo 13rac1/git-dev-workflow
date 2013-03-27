@@ -112,7 +112,7 @@ Install
 10. Clone the project repo to /root:
 
         cd ~
-        git clone git@domain.com:example
+        git clone git@localhost:example
 
 11. Add the Drupal code to the repo, commit everything, and push it to update
     the dev environment. Adjust the .gitignore file as needed.
@@ -206,6 +206,7 @@ Todo
 8.  Automate the existing site import and new site creation process.
 9.  Automate the dev user add process.
 10. Use factors to support CentOS.
+11. Fix clean/reset in the post-receive.
 
 Warning
 -------

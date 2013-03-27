@@ -33,9 +33,9 @@ if [ -d /var/www/$REPOSITORY/dev ]; then
     chmod u+w $NOWRITEFILES
   fi
   # Clean the directory
-  git clean -d -f
+  #git clean -d -f
   # Reset the files
-  git reset --hard HEAD
+  #git reset --hard HEAD
   # Get the changes
   git pull -f
   if [ -n "$NOWRITEFILES" ]; then
