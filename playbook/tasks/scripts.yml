@@ -12,3 +12,6 @@
 - name: Scripts | Setup the gdw script
   copy: src=files/usr-local-bin-gdw dest=/usr/local/bin/gdw mode=0555
 
+- name: Scripts | Setup the gdw-drush script
+  copy: src=files/usr-local-bin-gdw-drush dest=/usr/local/bin/gdw-drush mode=0555
+

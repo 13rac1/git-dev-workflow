@@ -1,0 +1,35 @@
+#!/bin/bash
+# GDW Drush script for running Drush as the Apache HTTP Server user.
+
+# Exit on any error
+set -e
+
+if [ ! -f $HOME/.gdw/gdw.conf ]; then
+  echo "gdw.conf not found. Are you sure this is the correct user?"
+  exit 1
+fi
+
+# Load the project specific settings
+. $HOME/.gdw/gdw.conf
+
+ENV=$1
+if [ -z "$ENV" ]; then
+  echo "Environment required."
+  exit 1
+fi
+
+# Remove the first arg
+shift
+
+# Call drush as the www-data user and specify file root and URL.
+case "$ENV" in
+  dev)
+    sudo -u www-data drush -l http://$DOMAIN_DEV -r $WWW_DIR/$PROJECT_NAME/$ENV "$@"
+  ;;
+  test)
+    sudo -u www-data drush -l http://$DOMAIN_TEST -r $WWW_DIR/$PROJECT_NAME/$ENV "$@"
+  ;;
+  live)
+    sudo -u www-data drush -l http://$DOMAIN_LIVE -r $WWW_DIR/$PROJECT_NAME/$ENV "$@"
+  ;;
+esac
