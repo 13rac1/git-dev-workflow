@@ -1,0 +1,21 @@
+#!/bin/bash
+# Project specific settings for the project owner user.
+
+PROJECT_NAME={{ project_name }}
+PROJECT_FILES={{ project_files }}
+
+WWW_DIR={{ www_dir }}
+DOMAIN_DEV={{ project_domain_dev }}
+DOMAIN_TEST={{ project_domain_test }}
+DOMAIN_LIVE={{ project_domain_live }}
+
+MYSQL_HOST={{ project_db_hostname }}
+MYSQL_DB_DEV={{ mysql_safe.stdout }}_dev
+MYSQL_USER_DEV={{ mysql_safe.stdout }}_dev
+MYSQL_PASS_DEV={{ project_db_password_dev }}
+MYSQL_DB_TEST={{ mysql_safe.stdout }}_test
+MYSQL_USER_TEST={{ mysql_safe.stdout }}_test
+MYSQL_PASS_TEST={{ project_db_password_test }}
+MYSQL_DB_LIVE={{ mysql_safe.stdout }}_live
+MYSQL_USER_LIVE={{ mysql_safe.stdout }}_live
+MYSQL_PASS_LIVE={{ project_db_password_live }}

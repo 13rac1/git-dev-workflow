@@ -21,27 +21,23 @@
 # Cuts project name to 11 characters to fit the 16 charactor MySQL username limit.
 # Converts - to _ since has inconsistent support of dashes/hyphen.
 # May needs more work.
-- name: Generate safe MySQL database name.
-  shell: echo ${project_name} | cut -c1-11 | sed "s/-/_/g"
-  register: mysql_db_safe
-
 - name: MySQL | Create a project_name_dev database.
-  mysql_db: db=${mysql_db_safe.stdout}_dev state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
+  mysql_db: db=${mysql_safe.stdout}_dev state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
 
 - name: MySQL | Create a project_name_dev user.
-  mysql_user: name=${mysql_db_safe.stdout}_dev priv=${mysql_db_safe.stdout}_dev.*:ALL password=${project_db_password_dev} host=${project_db_hostname} state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
+  mysql_user: name=${mysql_safe.stdout}_dev priv=${mysql_safe.stdout}_dev.*:ALL password=${project_db_password_dev} host=${project_db_hostname} state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
 
 - name: MySQL | Create a project_name_test database.
-  mysql_db: db=${mysql_db_safe.stdout}_test state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
+  mysql_db: db=${mysql_safe.stdout}_test state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
 
 - name: MySQL | Create a project_name_test user.
-  mysql_user: name=${mysql_db_safe.stdout}_test priv=${mysql_db_safe.stdout}_test.*:ALL password=${project_db_password_test} host=${project_db__hostname} state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
+  mysql_user: name=${mysql_safe.stdout}_test priv=${mysql_safe.stdout}_test.*:ALL password=${project_password_test} host=${project_db_hostname} state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
 
 - name: MySQL | Create a project_name_live database.
-  mysql_db: db=${mysql_db_safe.stdout}_live state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
+  mysql_db: db=${mysql_safe.stdout}_live state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
 
 - name: MySQL | Create a project_name_live user.
-  mysql_user: name=${mysql_db_safe.stdout}_live priv=${mysql_db_safe.stdout}_live.*:ALL password=${project_db_password_live} host=${project_db_hostname} state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
+  mysql_user: name=${mysql_safe.stdout}_live priv=${mysql_safe.stdout}_live.*:ALL password=${project_db_password_live} host=${project_db_hostname} state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
 
 - name: MySQL | Create a Drupal setttings.php include file.
   template: src=templates/var-git-project-project.settings.php.j2 dest=${www_dir}/${project_name}/gdw.settings.php

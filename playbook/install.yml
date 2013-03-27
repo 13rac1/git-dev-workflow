@@ -129,11 +129,6 @@
       copy: src=files/etc-ssh-sshd_config dest=/etc/ssh/sshd_config backup=yes
 
     ##
-    # Configure MySQL
-    #
-    - include: tasks/mysql.yml
-
-    ##
     # Configure the ufw firewall
     #
     - name: ufw | Allow SSH
@@ -149,6 +144,22 @@
     # Drush install, a Drupal shell tool.
     #
     - include: tasks/drush.yml
+
+    ##
+    # Create safe project name for MySQL
+    - name: Generate safe MySQL database name.
+      shell: echo ${project_name} | cut -c1-11 | sed "s/-/_/g"
+      register: mysql_safe
+
+    ##
+    # Configure MySQL, needs $mysql_safe
+    #
+    - include: tasks/mysql.yml
+
+    ##
+    # Script install, needs $mysql_safe
+    #
+    - include: tasks/scripts.yml
 
     ##
     # Restart/Reload all modified services

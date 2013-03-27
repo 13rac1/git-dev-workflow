@@ -16,17 +16,17 @@ $environment = array_pop(explode('/', DRUPAL_ROOT));
 
 switch ($major_version . '-' . $environment) {
   case '6-dev':
-    $db_url = 'mysqli://{{ mysql_db_safe.stdout }}_dev:{{ project_db_password_dev }}@{{ mysql_hostname }}/{{ mysql_db_safe.stdout }}_dev';
+    $db_url = 'mysqli://{{ mysql_safe.stdout }}_dev:{{ project_db_password_dev }}@{{ mysql_hostname }}/{{ mysql_safe.stdout }}_dev';
   case '6-test':
-    $db_url = 'mysqli://{{ mysql_db_safe.stdout }}_test:{{ project_db_password_test }}@{{ mysql_hostname }}/{{ mysql_db_safe.stdout }}_test';
+    $db_url = 'mysqli://{{ mysql_safe.stdout }}_test:{{ project_db_password_test }}@{{ mysql_hostname }}/{{ mysql_safe.stdout }}_test';
   case '6-live':
-    $db_url = 'mysqli://{{ mysql_db_safe.stdout }}_live:{{ project_db_password_live }}@{{ mysql_hostname }}/{{ mysql_db_safe.stdout }}_live';
+    $db_url = 'mysqli://{{ mysql_safe.stdout }}_live:{{ project_db_password_live }}@{{ mysql_hostname }}/{{ mysql_safe.stdout }}_live';
   case '7-dev':
     $databases = array (
       'default' => array (
         'default' => array (
-          'database' => '{{ mysql_db_safe.stdout }}_dev',
-          'username' => '{{ mysql_db_safe.stdout }}_dev',
+          'database' => '{{ mysql_safe.stdout }}_dev',
+          'username' => '{{ mysql_safe.stdout }}_dev',
           'password' => '{{ project_db_password_dev }}',
           'host' => '{{ mysql_hostname }}',
           'port' => '',
@@ -40,8 +40,8 @@ switch ($major_version . '-' . $environment) {
     $databases = array (
       'default' => array (
         'default' => array (
-          'database' => '{{ mysql_db_safe.stdout }}_test',
-          'username' => '{{ mysql_db_safe.stdout }}_test',
+          'database' => '{{ mysql_safe.stdout }}_test',
+          'username' => '{{ mysql_safe.stdout }}_test',
           'password' => '{{ project_db_password_test }}',
           'host' => '{{ mysql_hostname }}',
           'port' => '',
@@ -55,8 +55,8 @@ switch ($major_version . '-' . $environment) {
     $databases = array (
       'default' => array (
         'default' => array (
-          'database' => '{{ mysql_db_safe.stdout }}_live',
-          'username' => '{{ mysql_db_safe.stdout }}_live',
+          'database' => '{{ mysql_safe.stdout }}_live',
+          'username' => '{{ mysql_safe.stdout }}_live',
           'password' => '{{ project_db_password_live }}',
           'host' => '{{ mysql_hostname }}',
           'port' => '',

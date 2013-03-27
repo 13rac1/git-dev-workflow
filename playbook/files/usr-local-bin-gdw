@@ -4,9 +4,6 @@
 # Exit on any error
 set -e
 
-# Load the project specific settings
-. $HOME/.gdw/gdw_settings
-
 # Help text to display on error.
 function help {
   echo "
@@ -68,10 +65,13 @@ function check_env {
 function check_env_type {
   ENV=$1
 
-  if [ "$ENV" ]; then
-    echo "ERROR: Environment required."
-    help
+  if [ "$ENV" = "dev" ] || [ "$ENV" = "test" ] || [ "$ENV" = "live" ]; then
+    # If environment is dev/test/live return cleanly
+    return 0
   fi
+  # Otherwise fail
+  echo "ERROR: Environment of type dev/test/live required."
+  help
 }
 
 # Database sync command
@@ -80,7 +80,44 @@ function command_db {
   DEST=$2
   check_src_dest $SRC $DEST
 
+  # Determine which db is src and dest
+  case "$SRC" in
+    dev)
+      MYSQL_DB_SRC=$MYSQL_DB_DEV
+      MYSQL_USER_SRC=$MYSQL_USER_DEV
+      MYSQL_PASS_SRC=$MYSQL_PASS_DEV
+    ;;
+    test)
+      MYSQL_DB_SRC=$MYSQL_DB_TEST
+      MYSQL_USER_SRC=$MYSQL_USER_TEST
+      MYSQL_PASS_SRC=$MYSQL_PASS_TEST
+    ;;
+    live)
+      MYSQL_DB_SRC=$MYSQL_DB_LIVE
+      MYSQL_USER_SRC=$MYSQL_USER_LIVE
+      MYSQL_PASS_SRC=$MYSQL_PASS_LIVE
+    ;;
+  esac
+  case "$DEST" in
+    dev)
+      MYSQL_DB_DEST=$MYSQL_DB_DEV
+      MYSQL_USER_DEST=$MYSQL_USER_DEV
+      MYSQL_PASS_DEST=$MYSQL_PASS_DEV
+    ;;
+    test)
+      MYSQL_DB_DEST=$MYSQL_DB_TEST
+      MYSQL_USER_DEST=$MYSQL_USER_TEST
+      MYSQL_PASS_DEST=$MYSQL_PASS_TEST
+    ;;
+    live)
+      MYSQL_DB_DEST=$MYSQL_DB_LIVE
+      MYSQL_USER_DEST=$MYSQL_USER_LIVE
+      MYSQL_PASS_DEST=$MYSQL_PASS_LIVE
+    ;;
+  esac
+
   echo "Updating the database"
+  # Be nice to CPU and I/O
   nice -n 10 ionice -c2 -n7 /usr/bin/mysqldump --host=$MYSQL_HOST --user=$MYSQL_USER_SRC --password=$MYSQL_PASS_SRC $MYSQL_DB_SRC \
   | nice -n 10 ionice -c2 -n7 /usr/bin/mysql --host=$MYSQL_HOST --user=$MYSQL_USER_DEST --password=$MYSQL_PASS_DEST $MYSQL_DB_DEST
 }
@@ -92,7 +129,7 @@ function command_files {
   check_src_dest $SRC $DEST
 
   echo "Updating the public files directory"
-  sudo -u www-data cp -R /var/www/test-project/$SRC/sites/default/files /var/www/test-project/$DEST/sites/default/files
+  sudo -u www-data cp -R $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES $WWW_DIR/$PROJECT_NAME/$DEST/$PROJECT_FILES
 }
 
 # Code pull command
@@ -107,7 +144,7 @@ function command_pull {
   fi
 
   echo "Updating the $ENV code using the $BRANCH branch"
-  sudo -u git git --work-tree=/var/www/test-project/$ENV --git-dir=/var/www/test-project/$ENV/.git/ pull origin $BRANCH
+  sudo -u git git --work-tree=$WWW_DIR/$PROJECT_NAME/$ENV --git-dir=$WWW_DIR/$PROJECT_NAME/$ENV/.git/ pull origin $BRANCH
 
   echo "Running the Drupal database update script on $ENV"
   #sudo -u www-data drush -y -r /var/www/test-project/test -l http://test.example.com updb
@@ -137,8 +174,18 @@ function command_update {
   esac
 }
 
-
 # Main script start
+
+if [ ! -f $HOME/.gdw/gdw.conf ]; then
+  echo "gdw.conf not found. Are you sure this is the correct user?"
+  exit 1
+fi
+
+# Load the project specific settings
+. $HOME/.gdw/gdw.conf
+
+
+
 COMMAND=$1
 if [ -z "$COMMAND" ]; then
   echo "Command required."
@@ -162,4 +209,3 @@ case "$COMMAND" in
 esac
 
 echo Done.
-

@@ -1,0 +1,14 @@
+---
+##
+# Install and configure of GDW specific scripts
+#
+- name: Scripts | Create .gdw directory in project_name user home
+  file: path=/home/${project_name}/.gdw state=directory owner=${project_name} group=${project_name}
+
+- name: Scripts | Add the gdw script config file
+  template: src=templates/home-project-.gdw-gdw.conf.j2 dest=/home/${project_name}/.gdw/gdw.conf
+
+  # /usr/local/bin must be in the user's $PATH, and requires the script in user's home
+- name: Scripts | Setup the gdw script
+  copy: src=files/usr-local-bin-gdw dest=/usr/local/bin/gdw mode=0555
+
