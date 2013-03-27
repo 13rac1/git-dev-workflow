@@ -128,8 +128,14 @@ function command_files {
   DEST=$2
   check_src_dest $SRC $DEST
 
-  echo "Updating the public files directory"
-  sudo -u www-data cp -R $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES $WWW_DIR/$PROJECT_NAME/$DEST/$PROJECT_FILES
+  echo "Updating the public files directory: $SRC -> $DEST"
+
+  if [ -d $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES ]; then
+    sudo -u www-data cp -R $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES $WWW_DIR/$PROJECT_NAME/$DEST/$PROJECT_FILES
+  else
+    echo "NOTICE: Public files directory $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES does not exist."
+  fi
+
 }
 
 # Code pull command
@@ -143,11 +149,25 @@ function command_pull {
     BRANCH=master
   fi
 
+  # Determine which domain to run against.
+  case "$ENV" in
+    dev)
+      DOMAIN=$DOMAIN_DEV
+    ;;
+    test)
+      DOMAIN=$DOMAIN_TEST
+    ;;
+    live)
+      DOMAIN=$DOMAIN_LIVE
+    ;;
+  esac
+
+
   echo "Updating the $ENV code using the $BRANCH branch"
   sudo -u git git --work-tree=$WWW_DIR/$PROJECT_NAME/$ENV --git-dir=$WWW_DIR/$PROJECT_NAME/$ENV/.git/ pull origin $BRANCH
 
   echo "Running the Drupal database update script on $ENV"
-  #sudo -u www-data drush -y -r /var/www/test-project/test -l http://test.example.com updb
+  sudo -u www-data drush updatedb -r $WWW_DIR/$PROJECT_NAME/$ENV -l http://$DOMAIN
 }
 
 # Primary workflow update commands.

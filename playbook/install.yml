@@ -89,6 +89,12 @@
     - name: Users | Add localhost to root known_hosts
       shell: ssh-keyscan -t rsa localhost >> /root/.ssh/known_hosts
 
+    - name: Users | Setup project_name user sudo as git/www-data
+      template: src=templates/etc-sudoers.d-project.j2 dest=/etc/sudoers.d/${project_name} mode=0440
+
+    - name: Users | Create symbolic link to www files
+      file: path=/home/${project_name}/www src=${www_dir}/${project_name} state=link owner=${project_name} group=${project_name}
+
     ##
     # Configure git for root user
     #
@@ -107,12 +113,6 @@
     # Configure Apache
     #
     - include: tasks/apache.yml
-
-    ##
-    # Configure user sudo
-    #
-    - name: User Sudo | Setup project_name user sudo as git/www-data
-      template: src=templates/etc-sudoers.d-project.j2 dest=/etc/sudoers.d/${project_name} mode=0440
 
     ##
     # Configure PHP

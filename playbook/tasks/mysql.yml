@@ -31,7 +31,7 @@
   mysql_db: db=${mysql_safe.stdout}_test state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
 
 - name: MySQL | Create a project_name_test user.
-  mysql_user: name=${mysql_safe.stdout}_test priv=${mysql_safe.stdout}_test.*:ALL password=${project_password_test} host=${project_db_hostname} state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
+  mysql_user: name=${mysql_safe.stdout}_test priv=${mysql_safe.stdout}_test.*:ALL password=${project_db_password_test} host=${project_db_hostname} state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
 
 - name: MySQL | Create a project_name_live database.
   mysql_db: db=${mysql_safe.stdout}_live state=present login_host=${mysql_hostname} login_user=${mysql_username} login_password=${mysql_password}
