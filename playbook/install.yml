@@ -97,6 +97,12 @@
       #file: path=/home/${project_name}/www src=${www_dir}/${project_name} state=link owner=${project_name} group=${project_name}
       shell: su - ${project_name} -c "ln -s ${www_dir}/${project_name} www" creates=/home/${project_name}/www
 
+    - name: Users | Create an empty authorized_keys file for project_name
+      command: touch /home/${project_name}/.ssh/authorized_keys
+
+    - name: Users | Set permissions and ownership for authorized_keys file
+      file: path=/home/${project_name}/.ssh/authorized_keys owner=${project_name} group=${project_name} mode=0600
+
     ##
     # Configure git for root user
     #

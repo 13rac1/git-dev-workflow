@@ -53,7 +53,8 @@ key has already been added to gitolite by the root user.
 Notes
 -----
 * This uses Ansible for configuration management.
-* It is designed for use with Ubuntu 12.04 LTS and Ubuntu 12.10.
+* It is designed for use with Ubuntu 12.04 LTS. It works with a minor warning
+  in Ubuntu 12.10; to be fixed.
 * This initial version sets up dev/test/live environments for a single project
   only.
 * Git clean/reset is run on every environment update. All files must either be
@@ -194,16 +195,17 @@ Create a developer user
 
 Todo
 ----
-1. Optionally, use Xginx with PHP-FPM instead of Apache.
-2. Optionally, use Redis instead of Memcache.
-2. Add additional security.
-3. Multiple projects per server.
-4. Support additional software in addition to Drupal.
-5. Apache optimizations.
-6. MySQL optimizations.
-7. Optionally, install Varnish.
-8. Automate the existing site import and new site creation process.
-9. Automate the user add process.
+1.  Optionally, use Xginx with PHP-FPM instead of Apache.
+2.  Optionally, use Redis instead of Memcache.
+2.  Add additional security.
+3.  Multiple projects per server.
+4.  Support additional software in addition to Drupal.
+5.  Apache optimizations.
+6.  MySQL optimizations.
+7.  Optionally install Varnish.
+8.  Automate the existing site import and new site creation process.
+9.  Automate the dev user add process.
+10. Use factors to support CentOS.
 
 Warning
 -------
