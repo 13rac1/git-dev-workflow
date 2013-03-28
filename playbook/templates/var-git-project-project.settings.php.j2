@@ -11,8 +11,10 @@
 // Get the major Drupal version number (6/7/8)
 $major_version = substr(VERSION, 0, 1);
 
+// Explode the Drupal root
+$drupal_root = explode('/', DRUPAL_ROOT);
 // Get the last directory name in DRUPAL_ROOT (dev/test/live)
-$environment = array_pop(explode('/', DRUPAL_ROOT));
+$environment = array_pop($drupal_root);
 
 switch ($major_version . '-' . $environment) {
   case '6-dev':

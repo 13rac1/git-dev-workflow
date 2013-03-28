@@ -116,7 +116,7 @@ function command_db {
     ;;
   esac
 
-  echo "Updating the database"
+  echo "Updating the database: $SRC -> $DEST"
   # Be nice to CPU and I/O
   nice -n 10 ionice -c2 -n7 /usr/bin/mysqldump --host=$MYSQL_HOST --user=$MYSQL_USER_SRC --password=$MYSQL_PASS_SRC $MYSQL_DB_SRC \
   | nice -n 10 ionice -c2 -n7 /usr/bin/mysql --host=$MYSQL_HOST --user=$MYSQL_USER_DEST --password=$MYSQL_PASS_DEST $MYSQL_DB_DEST
@@ -167,7 +167,7 @@ function command_pull {
   sudo -u git git --work-tree=$WWW_DIR/$PROJECT_NAME/$ENV --git-dir=$WWW_DIR/$PROJECT_NAME/$ENV/.git/ pull origin $BRANCH
 
   echo "Running the Drupal database update script on $ENV"
-  sudo -u www-data drush -r $WWW_DIR/$PROJECT_NAME/$ENV -l http://$DOMAIN updatedb
+  sudo -u www-data drush -l http://$DOMAIN -r $WWW_DIR/$PROJECT_NAME/$ENV updatedb
 }
 
 # Primary workflow update commands.

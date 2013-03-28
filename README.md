@@ -115,35 +115,48 @@ Install
 
 11. Add the Drupal code to the repo, commit everything, and push it to update
     the dev environment. Adjust the .gitignore file as needed.
-12. Add the database connection include to the sites/default/settings.php file:
+
+        cd ~/example
+        git add .
+        git commit -m "Initial commit"
+        git push origin master
+
+12. Create/edit the settings.php and add the database connection include to the bottom of the
+    sites/default/settings.php file:
 
         // Added for GDW server
         if (file_exists('../gdw.settings.php')) {
           include '../gdw.settings.php';
         }
 
-13. If importing a site, import the site database into the development
+13. Force add the settings.php file to the repo, commit, and push.
+
+        git add sites/default/settings.php -f
+        git commit -m "Add GDW include to settings.php"
+        git push
+
+14. If importing a site, import the site database into the development
     environment:
 
         mysql PROJECT-NAME_dev < site.sql
 
-14. If importing a site, copy/move all Drupal files to the development
+15. If importing a site, copy/move all Drupal files to the development
     environment Drupal public files directory and be sure files are owned by
     the www-data user:
 
         cp -R site-files/* /var/www/PROJECT-NAME/dev/sites/default/files/
         chown -R www-data:www-data /var/www/PROJECT-NAME/dev/sites/default/files
 
-15. Sync code/files/db from dev to test and live.
+16. Sync code/files/db from dev to test and live.
 
+        su - PROJECT-NAME -c gdw pull test
         su - PROJECT-NAME -c gdw db dev test
         su - PROJECT-NAME -c gdw files dev test
-        su - PROJECT-NAME -c gdw pull test
+        su - PROJECT-NAME -c gdw pull live
         su - PROJECT-NAME -c gdw db dev live
         su - PROJECT-NAME -c gdw files dev live
-        su - PROJECT-NAME -c gdw pull live
 
-16. Test your sites!
+17. Test your sites!
 
 Create a developer user
 -----------------------
