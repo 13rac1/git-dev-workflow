@@ -93,7 +93,9 @@
       template: src=templates/etc-sudoers.d-project.j2 dest=/etc/sudoers.d/${project_name} mode=0440
 
     - name: Users | Create symbolic link to www files
-      file: path=/home/${project_name}/www src=${www_dir}/${project_name} state=link owner=${project_name} group=${project_name}
+      # Ansible 1.0 will change the ownership of the src, and not the link.
+      #file: path=/home/${project_name}/www src=${www_dir}/${project_name} state=link owner=${project_name} group=${project_name}
+      shell: su - ${project_name} -c "ln -s ${www_dir}/${project_name} www" creates=/home/${project_name}/www
 
     ##
     # Configure git for root user
@@ -108,6 +110,11 @@
     # Gitolite install
     #
     - include: tasks/gitolite.yml
+
+    ##
+    # Setup Environments
+    #
+    - include: tasks/environments.yml
 
     ##
     # Configure Apache
