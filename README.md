@@ -75,8 +75,11 @@ Terminology
 
 Install
 -------
-1.  Create a new Ubuntu 12.04 LTS installation.
-2.  Open a terminal connection as the root user.
+1.  Create a new Ubuntu 12.04 LTS install on a local VM or a VPS.
+2.  Connect to the server via SSH and become root:
+
+        sudo -i
+
 3.  Confirm that the server is up to date. Restart after any updates:
 
         apt-get update
