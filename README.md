@@ -20,8 +20,8 @@ In this workflow, there are three environments setup on the server:
   When tests have confirmed that the code/database/files work correctly
   on Testing, then the code is updated.
 
-EXAMPLE
--------
+EXAMPLE USE
+-----------
 The following is an overly cautious example of the workflow to add module and
 update the live instance from a local machine. Assumptions: The user's public
 key has already been added to gitolite by the root user.
@@ -62,8 +62,9 @@ Notes
   they will be deleted.
 * No user should ever manually modify or create files in any of the managed
   environments.
-* Run MySQLTuner: http://mysqltuner.pl/mysqltuner.pl 
-* Secure your MySQL, by running *mysql_secure_installation*.
+* After the website is running, run MySQLTuner to optimize MySQL for your data set:
+  http://mysqltuner.pl/mysqltuner.pl and secure MySQL by running 
+  *mysql_secure_installation*.
 * A Linux user with the same name as the project is created for each project.
   All site management should be done with this user.
 
