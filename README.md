@@ -1,24 +1,32 @@
-Git Development Workflow
+lGit Development Workflow
 ========================
 
-The Git-based Drupal website development workflow offered by Pantheon and
-Acquia is easy to use, but complex to setup on your own server. This script
-will setup a similar dev/test/live workflow.
+GDW is an Ansible-based script to build dev/test/live environments on your
+production Drupal web server. The workflow is similar to what is offered by
+Pantheon and Acquia. 
 
-WORKFLOW DESCRIPTION
---------------------
-In this workflow, there are three environments setup on the server:
+What?
+-----
 
-* dev - The Development environment is used for all code development. As needed
+
+The root user runs Ansible sets up the server and installs the *gdw* script. 
+
+WORKFLOW
+--------
+There are three environments setup on the server:
+
+* dev - The Development environment is used for all code development. 
+  Developers work with a clone of the site repo
+  code committed to As needed
   Development is updated with the current database and files from the live
-  environment to keep it up to date.
+  environment to keep it up to date. All pushes
 * test - The Testing environment is used to test changes and new
   functionality. As needed, Testing is updated by getting the current code from
   the git repository, and the current database and files from the live
   environment.
-* live - The Live environment is the actual live environment for the website.
-  When tests have confirmed that the code/database/files work correctly
-  on Testing, then the code is updated.
+* live - The Live environment is the actual production environment for the 
+  website. The code is updatedwhen tests have confirmed that the code/database/files work correctly
+  on Testing, then the code 
 
 EXAMPLE USE
 -----------
@@ -212,6 +220,12 @@ Todo
 10. Use factors to support CentOS.
 11. Fix clean/reset in the post-receive.
 12. Use rsync instead of cp for copying public files.
+13. Arbitrary number of environments.
+14. Vagrant script for local development.
+15. Support for load balancers.
+16. Support for external Redis.
+17. install.sh to automate steps 2-6
+18. Add log of gdw commands
 
 Warning
 -------
