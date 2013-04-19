@@ -1,32 +1,43 @@
-lGit Development Workflow
+Git Development Workflow
 ========================
 
-GDW is an Ansible-based script to build dev/test/live environments on your
-production Drupal web server. The workflow is similar to what is offered by
-Pantheon and Acquia. 
+GDW is a group of shell scripts using Gitolite and Ansible to 
+setup/maintain Git-based Drupal production website hosting server. The 
+Ansible script configures the server and all dependencies, Gitolite 
+manages user access to the git repository, and a shell script automates 
+the process of moving/syncing the code, public/private files, and 
+database between the dev/test/live environments. The goal is to automate 
+the DevOps required for a Drupal server, but to stay simple to understand 
+by using standard tools.
 
-What?
------
+Details
+-------
+There are three environments on the server: Dev/Test/Live. (Yes, this 
+supports a distinct website size where everything can be on one server.) 
+Each environment is a complete website including it's own copy of the 
+code, public/private files, and database. Developers work on Dev. Content 
+editors and site users work on Live. 
 
+Code changes are made to Development. To push a new feature live, the 
+code (from Dev) and the files/database (from Live) are brought together 
+on Test, then update.php is run to perform a test. If all new features 
+work as expected and nothing breaks, the new code can be pushed Live and 
+update.php run again. If anything doesn't work, you are protected from 
+breaking the Live environment.
 
-The root user runs Ansible sets up the server and installs the *gdw* script. 
+Environments:
 
-WORKFLOW
---------
-There are three environments setup on the server:
+* Development: dev.example.com - The dev environment is used for all code 
+  development. Themers/developers work with a clone of the site 
+  repository. A commit pushed to the repo will automatically appear on the dev 
+  environment. The dev environment is regularly updated with the live 
+  database and files. New features are built and tested here.
+* Testing: test.example.com - The test environment is used to test 
+  changes and new functionality. 
+* Live: (www.)example.com - The live environment is the actual production 
+  environment for the website. Only the code is updated after the site 
+  initially goes live.
 
-* dev - The Development environment is used for all code development. 
-  Developers work with a clone of the site repo
-  code committed to As needed
-  Development is updated with the current database and files from the live
-  environment to keep it up to date. All pushes
-* test - The Testing environment is used to test changes and new
-  functionality. As needed, Testing is updated by getting the current code from
-  the git repository, and the current database and files from the live
-  environment.
-* live - The Live environment is the actual production environment for the 
-  website. The code is updatedwhen tests have confirmed that the code/database/files work correctly
-  on Testing, then the code 
 
 EXAMPLE USE
 -----------
@@ -226,8 +237,10 @@ Todo
 16. Support for external Redis.
 17. install.sh to automate steps 2-6
 18. Add log of gdw commands
+19. Setup crontab
+20. Implement *curl https://raw.github.com/eosrei/git-dev-workflow/master/install.sh | bash -s*
 
 Warning
 -------
-This automated configration comes with absolutely no warranty. Further system security
+This automated configuration comes with absolutely no warranty. Further system security
 hardening is essential. You've been warned.
