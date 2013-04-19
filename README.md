@@ -218,30 +218,28 @@ Create a developer user
 
 Todo
 ----
-1.  Optionally, use Xginx with PHP-FPM instead of Apache.
-2.  Optionally, use Redis instead of Memcache.
-2.  Add additional security.
-3.  Multiple projects per server.
-4.  Support additional software in addition to Drupal.
-5.  Apache optimizations.
-6.  MySQL optimizations.
-7.  Optionally install Varnish.
-8.  Automate the existing site import and new site creation process.
-9.  Automate the dev user add process.
-10. Use factors to support CentOS.
-11. Fix clean/reset in the post-receive.
-12. Use rsync instead of cp for copying public files.
-13. Arbitrary number of environments.
-14. Vagrant script for local development.
-15. Support for load balancers.
-16. Support for external Redis.
-17. install.sh to automate steps 2-6
-18. Add log of gdw commands
-19. Setup crontab
-20. Implement *curl https://raw.github.com/eosrei/git-dev-workflow/master/install.sh | bash -s*
-21. Add gdw update confirmation.
+* Optionally, use Xginx with PHP-FPM instead of Apache.
+* Optionally, use Redis instead of Memcache.
+* Add additional security.
+* Multiple projects per server.
+* Support additional software in addition to Drupal.
+* Apache optimizations.
+* MySQL optimizations.
+* Optionally install Varnish.
+* Automate the existing site import and new site creation process.
+* Automate the dev user add process.
+* Use factors to support CentOS.
+* Fix clean/reset in the post-receive.
+* Arbitrary number of environments.
+* Vagrant script for local development.
+* Support for load balancers.
+* Support for external Redis.
+* Add log of gdw commands
+* Setup crontab
+* Implement *curl https://raw.github.com/eosrei/git-dev-workflow/master/install.sh | bash -s*
+* Add gdw update confirmation.
 
 Warning
 -------
 This automated configuration comes with absolutely no warranty. Further system security
-hardening is essential. You've been warned.
+hardening is essential. You've been warned!
