@@ -2,7 +2,7 @@ Git Development Workflow
 ========================
 
 GDW is a group of shell scripts using Gitolite and Ansible to 
-setup/maintain Git-based Drupal production website hosting server. The 
+setup/maintain a Git-based Drupal production website hosting server. The 
 Ansible script configures the server and all dependencies, Gitolite 
 manages user access to the git repository, and a shell script automates 
 the process of moving/syncing the code, public/private files, and 
@@ -22,8 +22,8 @@ Code changes are made to Development. To push a new feature live, the
 code (from Dev) and the files/database (from Live) are brought together 
 on Test, then update.php is run to perform a test. If all new features 
 work as expected and nothing breaks, the new code can be pushed Live and 
-update.php run again. If anything doesn't work, you are protected from 
-breaking the Live environment.
+update.php run again. The benefit of the Test environment is that if
+something doesn't work, you are protected from breaking the Live environment.
 
 Environments:
 
