@@ -38,6 +38,8 @@
 
 - name: Environments | Chown the public files directory to www-data for dev
   file: path=${www_dir}/${project_name}/dev/${project_files} state=directory owner=www-data group=www-data mode=755
+  # Ignore errors, because files directories may need to be symbolic links.
+  ignore_errors: yes
 
 - name: Environments | Create the public files directory and parents owned by git for test
   shell: mkdir -p ${www_dir}/${project_name}/test/${project_files}
@@ -46,6 +48,7 @@
 
 - name: Environments | Chown the public files directory to www-data for test
   file: path=${www_dir}/${project_name}/test/${project_files} state=directory owner=www-data group=www-data mode=755
+  ignore_errors: yes
 
 - name: Environments | Create the public files directory and parents owned by git for live
   shell: mkdir -p ${www_dir}/${project_name}/live/${project_files}
@@ -54,4 +57,5 @@
 
 - name: Environments | Chown the public files directory to www-data for live
   file: path=${www_dir}/${project_name}/live/${project_files} state=directory owner=www-data group=www-data mode=755
+  ignore_errors: yes
 

@@ -239,6 +239,7 @@ Todo
 18. Add log of gdw commands
 19. Setup crontab
 20. Implement *curl https://raw.github.com/eosrei/git-dev-workflow/master/install.sh | bash -s*
+21. Add gdw update confirmation.
 
 Warning
 -------
