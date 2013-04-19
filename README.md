@@ -63,7 +63,7 @@ key has already been added to gitolite by the root user.
     ssh example@domain.com gdw update dev
     # SSH to the server as the example user and run drush as the www-data user
     # to enable the views module. Test!
-    ssh example@domain.com gdw-drush en views
+    ssh example@domain.com gdw-drush dev en views
     # Update the test environment: test.example.com Test!
     ssh example@domain.com gdw update test
     # Update the live environment: www.example.com Test!
@@ -71,14 +71,13 @@ key has already been added to gitolite by the root user.
 
 Notes
 -----
-* This uses Ansible for configuration management.
 * It is designed for use with Ubuntu 12.04 LTS. It works with a minor warning
   in Ubuntu 12.10; to be fixed.
 * This initial version sets up dev/test/live environments for a single project
   only.
 * Git clean/reset is run on every environment update. All files must either be
   in the project repository or explicitly listed in the .gitignore otherwise
-  they will be deleted.
+  they will be deleted. (Currently disabled.)
 * No user should ever manually modify or create files in any of the managed
   environments.
 * After the website is running, run MySQLTuner to optimize MySQL for your data set:
@@ -196,7 +195,7 @@ Create a developer user
         cd ~/gitolite-admin/conf/users
         cp PROJECT-NAME.conf USERNAME.conf
 
-3. Edit the file contain the username of the user:
+3. Replace the PROJECT-NAME username with USERNAME in the USERNAME.conf to add the user to the @users group:
 
         nano USERNAME.conf
 
