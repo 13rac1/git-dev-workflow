@@ -175,12 +175,12 @@ Install
 17. Change to the project owner and sync code/db/files from dev to test/live.
 
         su - PROJECT-NAME
-        gdw db dev test
-        gdw pull test
-        gdw files dev test
-        gdw db dev live
-        gdw pull live
-        gdw files dev live
+        gdw -y db dev test
+        gdw -y pull test
+        gdw -y files dev test
+        gdw -y db dev live
+        gdw -y pull live
+        gdw -y files dev live
 
 18. Test your sites!
 
