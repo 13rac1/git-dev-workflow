@@ -159,13 +159,15 @@ function command_pull {
   ENV=$1
   BRANCH=$2
   check_env $ENV
-  echo -n "Updating the $ENV code using the $BRANCH branch"
-  confirm_command
 
   # If branch is not set, set to the default
   if [ -z "$BRANCH" ]; then
     BRANCH=master
   fi
+
+  echo -n "Updating the $ENV code using the $BRANCH branch"
+  confirm_command
+
 
   # Determine which domain to run against.
   case "$ENV" in
