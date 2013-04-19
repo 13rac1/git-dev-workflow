@@ -14,9 +14,10 @@ $major_version = substr(VERSION, 0, 1);
 // Explode the Drupal root
 $drupal_root = explode('/', DRUPAL_ROOT);
 // Get the last directory name in DRUPAL_ROOT (dev/test/live)
-$environment = array_pop($drupal_root);
+$www_env = array_pop($drupal_root);
 
-switch ($major_version . '-' . $environment) {
+// Switch to the database setup for the correct version and environment.
+switch ($major_version . '-' . $www_env) {
   case '6-dev':
     $db_url = 'mysqli://{{ mysql_safe.stdout }}_dev:{{ project_db_password_dev }}@{{ mysql_hostname }}/{{ mysql_safe.stdout }}_dev';
   case '6-test':
