@@ -10,10 +10,13 @@ function help {
 GDW Project Owner Environment Update/Sync Script
 Copyright (C) 2013 by Brad Erickson
 
-Usage: gdw update ENVIRONMENT
-  or   gdw db SOURCE DESTINATION
-  or   gdw files SOURCE DESTINATION
-  or   gdw pull ENVIRONMENT [BRANCH]
+Usage: gdw [-y] update ENVIRONMENT
+  or   gdw [-y] db SOURCE DESTINATION
+  or   gdw [-y] files SOURCE DESTINATION
+  or   gdw [-y] pull ENVIRONMENT [BRANCH]
+
+Options:
+  -y            Assume 'yes' as answer to prompts.
 
 Commands:
   update        Update an environment (dev/test/live). Most commonly used.
@@ -21,7 +24,7 @@ Commands:
   files         Sync the files from a source to a destination.
   pull          Update the code in an environment.
 
-Options:
+Arguments:
   ENVIRONMENT   An environment: 'dev', 'test' or 'live'.
   SOURCE        An environment: 'dev', 'test' or 'live'.
   DESTINATION   An environment: 'dev', 'test' or 'live'.
@@ -74,11 +77,24 @@ function check_env_type {
   help
 }
 
+function confirm_command {
+  if [ $AUTOCONFIRM == 0 ]; then
+    echo " (y/n)? y"
+  else
+    read -p " (y/n)? " ANSWER
+    if [ ${ANSWER} != "y" ]; then
+      exit 1
+    fi
+  fi
+}
+
 # Database sync command
 function command_db {
   SRC=$1
   DEST=$2
   check_src_dest $SRC $DEST
+  echo -n "Updating the database: $SRC -> $DEST"
+  confirm_command
 
   # Determine which db is src and dest
   case "$SRC" in
@@ -116,7 +132,6 @@ function command_db {
     ;;
   esac
 
-  echo "Updating the database: $SRC -> $DEST"
   # Be nice to CPU and I/O
   nice -n 10 ionice -c2 -n7 /usr/bin/mysqldump --host=$MYSQL_HOST --user=$MYSQL_USER_SRC --password=$MYSQL_PASS_SRC $MYSQL_DB_SRC \
   | pv | nice -n 10 ionice -c2 -n7 /usr/bin/mysql --host=$MYSQL_HOST --user=$MYSQL_USER_DEST --password=$MYSQL_PASS_DEST $MYSQL_DB_DEST
@@ -127,8 +142,9 @@ function command_files {
   SRC=$1
   DEST=$2
   check_src_dest $SRC $DEST
+  echo -n "Updating the public files directory: $SRC -> $DEST"
+  confirm_command
 
-  echo "Updating the public files directory: $SRC -> $DEST"
 
   if [ -d $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES ]; then
     sudo -u www-data rsync -vart --delete $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES/ $WWW_DIR/$PROJECT_NAME/$DEST/$PROJECT_FILES
@@ -143,6 +159,8 @@ function command_pull {
   ENV=$1
   BRANCH=$2
   check_env $ENV
+  echo -n "Updating the $ENV code using the $BRANCH branch"
+  confirm_command
 
   # If branch is not set, set to the default
   if [ -z "$BRANCH" ]; then
@@ -163,7 +181,6 @@ function command_pull {
   esac
 
 
-  echo "Updating the $ENV code using the $BRANCH branch"
   sudo -u git git --work-tree=$WWW_DIR/$PROJECT_NAME/$ENV --git-dir=$WWW_DIR/$PROJECT_NAME/$ENV/.git/ pull origin $BRANCH
 
   echo "Running the Drupal database update script on $ENV"
@@ -204,8 +221,21 @@ fi
 # Load the project specific settings
 . $HOME/.gdw/gdw.conf
 
+# Set argument defaults
+AUTOCONFIRM=1
 
+# Check for command line arguments
+while getopts y OPT; do
+  case $OPT in
+    y)AUTOCONFIRM=0;;
+    *)echo "Invalid argument: $OPT";;
+  esac
+done
 
+# Clean up the arguments
+shift $(($OPTIND - 1))
+
+# Check for a command
 COMMAND=$1
 if [ -z "$COMMAND" ]; then
   echo "Command required."

@@ -236,7 +236,8 @@ Todo
 * Add log of gdw commands
 * Setup crontab
 * Implement *curl https://raw.github.com/eosrei/git-dev-workflow/master/install.sh | bash -s*
-* Add gdw update confirmation.
+* Allow out of order -y option on gdw script.
+* Add default to -y option on gdw script.
 
 Warning
 -------
