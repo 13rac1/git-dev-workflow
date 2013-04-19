@@ -119,7 +119,7 @@ function command_db {
   echo "Updating the database: $SRC -> $DEST"
   # Be nice to CPU and I/O
   nice -n 10 ionice -c2 -n7 /usr/bin/mysqldump --host=$MYSQL_HOST --user=$MYSQL_USER_SRC --password=$MYSQL_PASS_SRC $MYSQL_DB_SRC \
-  | nice -n 10 ionice -c2 -n7 /usr/bin/mysql --host=$MYSQL_HOST --user=$MYSQL_USER_DEST --password=$MYSQL_PASS_DEST $MYSQL_DB_DEST
+  | pv | nice -n 10 ionice -c2 -n7 /usr/bin/mysql --host=$MYSQL_HOST --user=$MYSQL_USER_DEST --password=$MYSQL_PASS_DEST $MYSQL_DB_DEST
 }
 
 # File sync command
@@ -131,7 +131,7 @@ function command_files {
   echo "Updating the public files directory: $SRC -> $DEST"
 
   if [ -d $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES ]; then
-    sudo -u www-data cp -R $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES $WWW_DIR/$PROJECT_NAME/$DEST/$PROJECT_FILES
+    sudo -u www-data rsync -vart --delete $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES/ $WWW_DIR/$PROJECT_NAME/$DEST/$PROJECT_FILES
   else
     echo "NOTICE: Public files directory $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES does not exist."
   fi
@@ -167,7 +167,7 @@ function command_pull {
   sudo -u git git --work-tree=$WWW_DIR/$PROJECT_NAME/$ENV --git-dir=$WWW_DIR/$PROJECT_NAME/$ENV/.git/ pull origin $BRANCH
 
   echo "Running the Drupal database update script on $ENV"
-  sudo -u www-data drush -l http://$DOMAIN -r $WWW_DIR/$PROJECT_NAME/$ENV updatedb
+  sudo -u www-data drush -l http://$DOMAIN -r $WWW_DIR/$PROJECT_NAME/$ENV -y updatedb
 }
 
 # Primary workflow update commands.
