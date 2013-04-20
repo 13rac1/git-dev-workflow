@@ -147,7 +147,7 @@ function command_files {
 
 
   if [ -d $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES ]; then
-    sudo -u www-data rsync -vart --delete $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES/ $WWW_DIR/$PROJECT_NAME/$DEST/$PROJECT_FILES
+    sudo -u www-data rsync -var --delete --progress $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES/ $WWW_DIR/$PROJECT_NAME/$DEST/$PROJECT_FILES
   else
     echo "NOTICE: Public files directory $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES does not exist."
   fi

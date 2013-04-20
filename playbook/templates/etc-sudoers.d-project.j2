@@ -3,8 +3,8 @@
 # Updating the code for specific environments
 {{ project_name }}    ALL=(git) NOPASSWD: /usr/bin/git --work-tree={{ www_dir }}/{{ project_name }}/[A-Za-z]* --git-dir={{ www_dir }}/{{ project_name }}/[A-Za-z]* pull origin [A-Za-z]*
 
-# RSyncing the file data: verbose, archive, recursive, preserve modification time, and delete extra files.
-{{ project_name }}    ALL=(www-data) NOPASSWD: /usr/bin/rsync -vart --delete {{ www_dir }}/{{ project_name }}/[A-Za-z/]*/ {{ www_dir }}/{{ project_name }}/[A-Za-z/]*
+# RSyncing the file data: verbose, archive, recursive, show progress and delete extra files.
+{{ project_name }}    ALL=(www-data) NOPASSWD: /usr/bin/rsync -var --delete --progress {{ www_dir }}/{{ project_name }}/[A-Za-z/]*/ {{ www_dir }}/{{ project_name }}/[A-Za-z/]*
 
 # Run Drush as the www-data user
 {{ project_name }}    ALL=(www-data) NOPASSWD: /usr/bin/drush -l [A-Za-z/\:]* -r {{ www_dir }}/{{ project_name }}/[A-Za-z/]*
