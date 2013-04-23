@@ -78,13 +78,19 @@ function check_env_type {
 }
 
 function confirm_command {
+  MSG=$1
+  ANSWER=
+
   if [ $AUTOCONFIRM == 0 ]; then
-    echo " (y/n)? y"
+    echo $MSG "(y/N)? y"
   else
-    read -p " (y/n)? " ANSWER
-    if [ ${ANSWER} != "y" ]; then
-      exit 1
-    fi
+    while [[ $ANSWER != "y" && $ANSWER != "Y" ]]; do
+      echo -n $MSG "(y/N)? "
+      read ANSWER
+      if [[ $ANSWER == "n" || $ANSWER == "N" || -z $ANSWER ]]; then
+        exit 1
+      fi
+    done
   fi
 }
 
@@ -93,8 +99,7 @@ function command_db {
   SRC=$1
   DEST=$2
   check_src_dest $SRC $DEST
-  echo -n "Updating the database: $SRC -> $DEST"
-  confirm_command
+  confirm_command "Updating the database: $SRC -> $DEST"
 
   # Determine which db is src and dest
   case "$SRC" in
@@ -142,9 +147,7 @@ function command_files {
   SRC=$1
   DEST=$2
   check_src_dest $SRC $DEST
-  echo -n "Updating the public files directory: $SRC -> $DEST"
-  confirm_command
-
+  confirm_command "Updating the public files directory: $SRC -> $DEST"
 
   if [ -d $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES ]; then
     sudo -u www-data rsync -var --delete --progress $WWW_DIR/$PROJECT_NAME/$SRC/$PROJECT_FILES/ $WWW_DIR/$PROJECT_NAME/$DEST/$PROJECT_FILES
@@ -165,9 +168,7 @@ function command_pull {
     BRANCH=master
   fi
 
-  echo -n "Updating the $ENV code using the $BRANCH branch"
-  confirm_command
-
+  confirm_command "Updating the $ENV code using the $BRANCH branch"
 
   # Determine which domain to run against.
   case "$ENV" in
@@ -239,11 +240,6 @@ shift $(($OPTIND - 1))
 
 # Check for a command
 COMMAND=$1
-if [ -z "$COMMAND" ]; then
-  echo "Command required."
-  help
-fi
-
 # Call the funtion for the specified command
 case "$COMMAND" in
   update)
@@ -258,6 +254,10 @@ case "$COMMAND" in
   pull)
     command_pull $2
   ;;
+  *)
+    echo "ERROR: Command required."
+    help
+    exit 1
 esac
 
 echo Done.
