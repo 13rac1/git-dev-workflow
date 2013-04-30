@@ -21,23 +21,11 @@ project_email: 'user@example.com'
 # Domain name for the development environment
 project_domain_dev: 'dev.example.com'
 
-# Domain name for the test/staging environment
-project_domain_test: 'test.example.com'
-
-# Domain name for the live environment. Leave out the www. It will be added.
-project_domain_live: 'example.com'
-
 # Host for user project_name_* on project_name_* database. (Some hosts require the % wildcard.)
 project_db_hostname: 'localhost'
 
 # Password for user project_name_dev on project_name_dev database
 project_db_password_dev: 'ChangeThisPassword'
-
-# Password for user project_name_test on project_name_test database
-project_db_password_test: 'ChangeThisPassword'
-
-# Password for user project_name_live on project_name_live database
-project_db_password_live: 'ChangeThisPassword'
 
 # The directory within Drupal root containing the files directory.
 project_files: 'sites/default/files'

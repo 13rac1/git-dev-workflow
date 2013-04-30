@@ -10,17 +10,9 @@
 
 - name: Apache | Create the dev environment conf
   template: src=templates/etc-apache2-sites-available-project-dev.j2 dest=/etc/apache2/sites-available/${project_name}-dev
-- name: Apache | Create the test environment conf
-  template: src=templates/etc-apache2-sites-available-project-test.j2 dest=/etc/apache2/sites-available/${project_name}-test
-- name: Apache | Create the live environment conf
-  template: src=templates/etc-apache2-sites-available-project-live.j2 dest=/etc/apache2/sites-available/${project_name}-live
 
 - name: Apache | Enable the dev environment conf
   command: a2ensite ${project_name}-dev creates=/etc/apache2/sites-enabled/${project_name}-dev
-- name: Apache | Enable the test environment conf
-  command: a2ensite ${project_name}-test creates=/etc/apache2/sites-enabled/${project_name}-test
-- name: Apache | Enable the live environment conf
-  command: a2ensite ${project_name}-live creates=/etc/apache2/sites-enabled/${project_name}-live
 
 - name: Apache | Check the apache configuration
   command: apache2ctl configtest
@@ -29,14 +21,6 @@
 
 - name: Apache |Reverting - Disable dev environment conf
   action: command a2dissite ${project_name}-dev
-  when_failed: $apache_result
-
-- name: Apache |Reverting - Disable test environment conf
-  action: command a2dissite ${project_name}-test
-  when_failed: $apache_result
-
-- name: Apache |Reverting - Disable live environment conf
-  action: command a2dissite ${project_name}-live
   when_failed: $apache_result
 
 - name: Apache | Reverting changes - Ending playbook
