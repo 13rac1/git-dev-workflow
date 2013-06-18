@@ -51,8 +51,8 @@
     # Setup user accounts for git and the project owner.
     #
     - name: Users | Generate password for git/project user
-      # creates is not technically true, but works.
-      shell: makepasswd --chars=20 creates=$git_dir/.ssh/id_rsa
+      # Store the result in a variable; value may not be used.
+      shell: makepasswd --chars=20
       register: make_password
 
     - name: Users | Create git user
