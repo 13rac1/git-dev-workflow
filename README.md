@@ -215,6 +215,36 @@ Create a developer user
         git clone git@example.com:PROJECT-NAME
         ssh PROJECT-NAME@example.com gdw update dev
 
+Local development tips
+----------------------
+Clone each site from the gdw server to your www root (/var/www on Linux.)
+Create databases with the same name as the project and make them accessible
+to the same user. Then, you can have one gdw.settings.php file work
+automatically for all local development projects.
+
+    <?php
+    /**
+     * A gdw.settings.php files for local D7 development. Store in /var/www.
+     */
+    
+    // Site is stored in '/var/www/example', so database name is 'example'
+    $database = basename(getcwd());
+    
+    $databases = array (
+      'default' => array (
+        'default' => array (
+          'database' => $database,
+          'username' => 'root',
+          'password' => 'PASSWORD',
+          'host' => 'localhost',
+          'port' => '',
+          'driver' => 'mysql',
+          'prefix' => '',
+        ),
+      ),
+    );
+
+
 Todo
 ----
 * Optionally, use Xginx with PHP-FPM instead of Apache.
