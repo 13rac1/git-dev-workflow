@@ -82,10 +82,10 @@ function confirm_command {
   ANSWER=
 
   if [ $AUTOCONFIRM == 0 ]; then
-    echo $MSG "(y/N)? y"
+    echo $MSG "(y/n)? y"
   else
     while [[ $ANSWER != "y" && $ANSWER != "Y" ]]; do
-      echo -n $MSG "(y/N)? "
+      echo -n $MSG "(y/n)? "
       read ANSWER
       if [[ $ANSWER == "n" || $ANSWER == "N" || -z $ANSWER ]]; then
         exit 1
