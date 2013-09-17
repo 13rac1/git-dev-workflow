@@ -21,6 +21,11 @@ fi
 # Remove the first arg
 shift
 
+# If local TERM=="dumb" set external to dumb. Stops tput: unknown terminal "unknown"
+if [ $TERM == "dumb" ]; then
+  export TERM=dumb 
+fi
+
 # Call drush as the www-data user and specify file root and URL.
 case "$ENV" in
   dev)
