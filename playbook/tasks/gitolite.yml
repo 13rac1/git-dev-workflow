@@ -65,9 +65,9 @@
 
 - name: Gitolite | Commit all changes
   shell: git commit -m "Add ${project_name} repo and user via Ansible." chdir=/root/gitolite-admin
-  when_failed: ${gitolite_modified}
+  when: ${gitolite_modified.rc} != 0
 
 # Make the repo and setup the user's access.
 - name: Gitolite | Push the changes to create the repo.
   shell: git push chdir=/root/gitolite-admin
-  when_failed: ${gitolite_modified}
+  when: ${gitolite_modified.rc} != 0

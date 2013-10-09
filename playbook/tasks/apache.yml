@@ -29,16 +29,16 @@
 
 - name: Apache |Reverting - Disable dev environment conf
   action: command a2dissite ${project_name}-dev
-  when_failed: $apache_result
+  when: ${apache_result.rc} != 0
 
 - name: Apache |Reverting - Disable test environment conf
   action: command a2dissite ${project_name}-test
-  when_failed: $apache_result
+  when: ${apache_result.rc} != 0
 
 - name: Apache |Reverting - Disable live environment conf
   action: command a2dissite ${project_name}-live
-  when_failed: $apache_result
+  when: ${apache_result.rc} != 0
 
 - name: Apache | Reverting changes - Ending playbook
   action: fail msg="Apache configuration is invalid. Please check before re-running the playbook."
-  when_failed: $apache_result
+  when: ${apache_result.rc} != 0

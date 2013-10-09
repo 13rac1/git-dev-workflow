@@ -93,10 +93,10 @@
     - name: Users | Setup project_name user sudo as git/www-data
       template: src=templates/etc-sudoers.d-project.j2 dest=/etc/sudoers.d/${project_name} mode=0440
 
-    - name: Users | Create symbolic link to www files
+    #- name: Users | Create symbolic link to www files
       # Ansible 1.0 will change the ownership of the src, and not the link.
       #file: path=/home/${project_name}/www src=${www_dir}/${project_name} state=link owner=${project_name} group=${project_name}
-      shell: su - ${project_name} -c "ln -s ${www_dir}/${project_name} www" creates=/home/${project_name}/www
+    #  shell: su - ${project_name} -c "ln -s ${www_dir}/${project_name} /home/${project_name}/www" creates=/home/${project_name}/www
 
     - name: Users | Create an empty authorized_keys file for project_name
       command: touch /home/${project_name}/.ssh/authorized_keys
