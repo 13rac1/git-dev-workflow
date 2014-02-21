@@ -247,7 +247,7 @@ automatically for all local development projects.
 
 Todo
 ----
-* Optionally, use Xginx with PHP-FPM instead of Apache.
+* Optionally, use Nginx with PHP-FPM instead of Apache.
 * Optionally, use Redis instead of Memcache.
 * Add additional security.
 * Multiple projects per server.
