@@ -9,18 +9,18 @@
   command: a2enmod rewrite creates=/etc/apache2/mods-enabled/rewrite.load
 
 - name: Apache | Create the dev environment conf
-  template: src=templates/etc-apache2-sites-available-project-dev.j2 dest=/etc/apache2/sites-available/${project_name}-dev
+  template: src=templates/etc-apache2-sites-available-project-dev.j2 dest=/etc/apache2/sites-available/${project_name}-dev.conf
 - name: Apache | Create the test environment conf
-  template: src=templates/etc-apache2-sites-available-project-test.j2 dest=/etc/apache2/sites-available/${project_name}-test
+  template: src=templates/etc-apache2-sites-available-project-test.j2 dest=/etc/apache2/sites-available/${project_name}-test.conf
 - name: Apache | Create the live environment conf
-  template: src=templates/etc-apache2-sites-available-project-live.j2 dest=/etc/apache2/sites-available/${project_name}-live
+  template: src=templates/etc-apache2-sites-available-project-live.j2 dest=/etc/apache2/sites-available/${project_name}-live.conf
 
 - name: Apache | Enable the dev environment conf
-  command: a2ensite ${project_name}-dev creates=/etc/apache2/sites-enabled/${project_name}-dev
+  command: a2ensite ${project_name}-dev.conf creates=/etc/apache2/sites-enabled/${project_name}-dev.conf
 - name: Apache | Enable the test environment conf
-  command: a2ensite ${project_name}-test creates=/etc/apache2/sites-enabled/${project_name}-test
+  command: a2ensite ${project_name}-test.conf creates=/etc/apache2/sites-enabled/${project_name}-test.conf
 - name: Apache | Enable the live environment conf
-  command: a2ensite ${project_name}-live creates=/etc/apache2/sites-enabled/${project_name}-live
+  command: a2ensite ${project_name}-live.conf creates=/etc/apache2/sites-enabled/${project_name}-live.conf
 
 - name: Apache | Check the apache configuration
   command: apache2ctl configtest

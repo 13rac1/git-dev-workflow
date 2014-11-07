@@ -133,8 +133,6 @@
     #
     - name: PHP | PHP configuration file for Apache2
       template: src=templates/etc-php5-apache2-php.ini.j2 dest=/etc/php5/apache2/php.ini backup=yes
-    - name: PHP | Configure APC
-      template: src=templates/etc-php5-conf.d-apc.ini.j2 dest=/etc/php5/conf.d/apc.ini backup=yes
 
     ##
     # Configure sshd

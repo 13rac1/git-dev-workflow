@@ -9,9 +9,8 @@
   file: path=${git_dir}/bin state=directory owner=git group=git
 
 - name: Gitolite | Clone Gitolite repository
-  git: repo=https://github.com/sitaramc/gitolite.git dest=${git_dir}/gitolite version=v3.4
+  git: repo=https://github.com/sitaramc/gitolite.git dest=${git_dir}/gitolite version=v3.6 depth=1
   sudo_user: git
-  sudo: yes
 
 - name: Gitolite | Install gitolite
   command: ${git_dir}/gitolite/install -ln ${git_dir}/bin creates=${git_dir}/bin/gitolite
