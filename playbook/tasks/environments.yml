@@ -3,59 +3,62 @@
 # Setup the environment repos
 #
 
+- name: Environments | Create a directory for the environments
+  file: path={{ www_dir }}/{{ project_name }} state=directory owner=git group=git mode=755
+
 - name: Environments | Create a directory for the dev environment
-  file: path=${www_dir}/${project_name}/dev state=directory owner=git group=git mode=755
+  file: path={{ www_dir }}/{{ project_name }}/dev state=directory owner=git group=git mode=755
 
 - name: Environments | Create a directory for the test environment
-  file: path=${www_dir}/${project_name}/test state=directory owner=git group=git mode=755
+  file: path={{ (1) }}/{{ project_name }}/test state=directory owner=git group=git mode=755
 
 - name: Environments | Create a directory for the live environment
-  file: path=${www_dir}/${project_name}/live state=directory owner=git group=git mode=755
+  file: path={{ www_dir }}/{{ project_name }}/live state=directory owner=git group=git mode=755
 
 - name: Environments | Clone the repo into the dev directory
   # Ansible git module fails cloning empty repos, but probably shouldn't. Related: https://github.com/ansible/ansible/pull/1864
-  #git: repo=git@localhost:${project_name} dest=${www_dir}/${project_name}/dev
-  shell: git clone git@localhost:${project_name} ${www_dir}/${project_name}/dev creates=${www_dir}/${project_name}/dev/.git/HEAD chdir=${git_dir}
+  #git: repo=git@localhost:{{ project_name }} dest={{ www_dir }}/{{ project_name }}/dev
+  shell: git clone git@localhost:{{ project_name }} {{ www_dir }}/{{ project_name }}/dev creates={{ www_dir }}/{{ project_name }}/dev/.git/HEAD chdir={{ git_dir }}
   sudo_user: git
   sudo: yes
 
 - name: Environments | Clone the repo into the test directory
-  shell: git clone git@localhost:${project_name} ${www_dir}/${project_name}/test creates=${www_dir}/${project_name}/test/.git/HEAD chdir=${git_dir}
+  shell: git clone git@localhost:{{ project_name }} {{ www_dir }}/{{ project_name }}/test creates={{ www_dir }}/{{ project_name }}/test/.git/HEAD chdir={{ git_dir }}
   sudo_user: git
   sudo: yes
 
 - name: Environments | Clone the repo into the live directory
-  shell: git clone git@localhost:${project_name} ${www_dir}/${project_name}/live creates=${www_dir}/${project_name}/live/.git/HEAD chdir=${git_dir}
+  shell: git clone git@localhost:{{ project_name }} {{ www_dir }}/{{ project_name }}/live creates={{ www_dir }}/{{ project_name }}/live/.git/HEAD chdir={{ git_dir }}
   sudo_user: git
   sudo: yes
 
 - name: Environments | Create the public files directory and parents owned by git for dev
   # Ansible 1.0: If parent directories do not exist, they will be owned by root instead of specified owner.
-  # file: path=${www_dir}/${project_name}/dev/${project_files} state=directory owner=www-data group=www-data mode=755
-  shell: mkdir -p ${www_dir}/${project_name}/dev/${project_files}
+  # file: path={{ www_dir }}/{{ project_name }}/dev/{{ project_files }} state=directory owner=www-data group=www-data mode=755
+  shell: mkdir -p {{ www_dir }}/{{ project_name }}/dev/{{ project_files }}
   sudo_user: git
   sudo: yes
 
 - name: Environments | Chown the public files directory to www-data for dev
-  file: path=${www_dir}/${project_name}/dev/${project_files} state=directory owner=www-data group=www-data mode=755
+  file: path={{ www_dir }}/{{ project_name }}/dev/{{ project_files }} state=directory owner=www-data group=www-data mode=755
   # Ignore errors, because files directories may need to be symbolic links.
   ignore_errors: yes
 
 - name: Environments | Create the public files directory and parents owned by git for test
-  shell: mkdir -p ${www_dir}/${project_name}/test/${project_files}
+  shell: mkdir -p {{ www_dir }}/{{ project_name }}/test/{{ project_files }}
   sudo_user: git
   sudo: yes
 
 - name: Environments | Chown the public files directory to www-data for test
-  file: path=${www_dir}/${project_name}/test/${project_files} state=directory owner=www-data group=www-data mode=755
+  file: path={{ www_dir }}/{{ project_name }}/test/{{ project_files }} state=directory owner=www-data group=www-data mode=755
   ignore_errors: yes
 
 - name: Environments | Create the public files directory and parents owned by git for live
-  shell: mkdir -p ${www_dir}/${project_name}/live/${project_files}
+  shell: mkdir -p {{ www_dir }}/{{ project_name }}/live/{{ project_files }}
   sudo_user: git
   sudo: yes
 
 - name: Environments | Chown the public files directory to www-data for live
-  file: path=${www_dir}/${project_name}/live/${project_files} state=directory owner=www-data group=www-data mode=755
+  file: path={{ www_dir }}/{{ project_name }}/live/{{ project_files }} state=directory owner=www-data group=www-data mode=755
   ignore_errors: yes
 

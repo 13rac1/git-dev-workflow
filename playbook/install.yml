@@ -41,6 +41,8 @@
         - makepasswd
         - ufw
         - pv
+        - git
+        - python-mysqldb
 
     ##
     # Setup irrelevant system colors
@@ -56,24 +58,24 @@
       register: make_password
 
     - name: Users | Create git user
-      user: name=git createhome=yes home=$git_dir generate_ssh_key=yes shell=/bin/bash password=${make_password.stdout}
+      user: name=git createhome=yes home=$git_dir generate_ssh_key=yes shell=/bin/bash password={{ make_password.stdout }}
 
     - name: Users | Create project_name user
-      user: name=${project_name} createhome=yes home=/home/${project_name} generate_ssh_key=yes shell=/bin/bash password=${make_password.stdout}
+      user: name={{ project_name }} createhome=yes home=/home/{{ project_name }} generate_ssh_key=yes shell=/bin/bash password={{ make_password.stdout }}
 
     - name: Users | Generate SSH Key for root
       command: ssh-keygen -b 4096 -t rsa -f /root/.ssh/id_rsa -P "" creates=/root/.ssh/id_rsa
 
       # https://github.com/ansible/ansible/issues/1665 sudo_user doesn't work with variables in 1.0.
     - name: Users | Remove localhost from project_name user known_hosts, if it exists
-      shell: su - ${project_name} -c "ssh-keygen -R localhost"
+      shell: su - {{ project_name }} -c "ssh-keygen -R localhost"
       ignore_errors: yes      
-      #sudo_user: ${project_name}
+      #sudo_user: {{ project_name }}
       #sudo: yes
 
     - name: Users | Add localhost to project_name known_hosts
-      shell: su - ${project_name} -c "ssh-keyscan -t rsa localhost >> /home/${project_name}/.ssh/known_hosts"
-      #sudo_user: ${project_name}
+      shell: su - {{ project_name }} -c "ssh-keyscan -t rsa localhost >> /home/{{ project_name }}/.ssh/known_hosts"
+      #sudo_user: {{ project_name }}
       #sudo: yes
 
     - name: Users | Remove localhost from git user known_hosts, if it exists
@@ -81,7 +83,7 @@
       ignore_errors: yes      
 
     - name: Users | Add localhost to git known_hosts
-      shell: su - git -c "ssh-keyscan -t rsa localhost >> ${git_dir}/.ssh/known_hosts"
+      shell: su - git -c "ssh-keyscan -t rsa localhost >> {{ git_dir }}/.ssh/known_hosts"
 
     - name: Users | Remove localhost from root known_hosts, if it exists
       ignore_errors: yes
@@ -91,27 +93,27 @@
       shell: ssh-keyscan -t rsa localhost >> /root/.ssh/known_hosts
 
     - name: Users | Setup project_name user sudo as git/www-data
-      template: src=templates/etc-sudoers.d-project.j2 dest=/etc/sudoers.d/${project_name} mode=0440
+      template: src=templates/etc-sudoers.d-project.j2 dest=/etc/sudoers.d/{{ project_name }} mode=0440
 
     #- name: Users | Create symbolic link to www files
       # Ansible 1.0 will change the ownership of the src, and not the link.
-      #file: path=/home/${project_name}/www src=${www_dir}/${project_name} state=link owner=${project_name} group=${project_name}
-    #  shell: su - ${project_name} -c "ln -s ${www_dir}/${project_name} /home/${project_name}/www" creates=/home/${project_name}/www
+      #file: path=/home/{{ project_name }}/www src={{ www_dir }}/{{ project_name }} state=link owner={{ project_name }} group={{ project_name }}
+    #  shell: su - {{ project_name }} -c "ln -s {{ www_dir }}/{{ project_name }} /home/{{ project_name }}/www" creates=/home/{{ project_name }}/www
 
     - name: Users | Create an empty authorized_keys file for project_name
-      command: touch /home/${project_name}/.ssh/authorized_keys
+      command: touch /home/{{ project_name }}/.ssh/authorized_keys
 
     - name: Users | Set permissions and ownership for authorized_keys file
-      file: path=/home/${project_name}/.ssh/authorized_keys owner=${project_name} group=${project_name} mode=0600
+      file: path=/home/{{ project_name }}/.ssh/authorized_keys owner={{ project_name }} group={{ project_name }} mode=0600
 
     ##
     # Configure git for root user
     #
     - name: git | Set username
-      shell: git config --global user.name "${project_name} root"
+      shell: git config --global user.name "{{ project_name }} root"
 
     - name: git | Set email
-      shell: git config --global user.email "root@${project_domain_live}"
+      shell: git config --global user.email "root@{{ project_domain_live }}"
 
     ##
     # Gitolite install
@@ -160,7 +162,7 @@
     ##
     # Create safe project name for MySQL
     - name: Generate safe MySQL database name.
-      shell: echo ${project_name} | cut -c1-11 | sed "s/-/_/g"
+      shell: echo {{ project_name }} | cut -c1-11 | sed "s/-/_/g"
       register: mysql_safe
 
     ##

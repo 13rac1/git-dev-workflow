@@ -1,11 +1,11 @@
 Git Development Workflow
 ========================
 
-GDW is a group of shell scripts using Gitolite and Ansible to 
-setup/maintain a Git-based Drupal production website hosting server. The 
-Ansible script configures the server and all dependencies, Gitolite 
-manages user access to the git repository, and a shell script automates 
-the process of moving/syncing the code, public/private files, and 
+GDW is server configuration using Gitolite and Ansible to
+setup/maintain a Git-based Continous Integration Drupal production website
+hosting server. The Ansible script configures the server and all dependencies,
+Gitolite manages user access to the git repository, and a shell script
+automates the process of moving/syncing the code, public/private files, and
 database between the dev/test/live environments. The goal is to automate 
 the DevOps required for a Drupal server, but to stay simple to understand 
 by using standard tools.
