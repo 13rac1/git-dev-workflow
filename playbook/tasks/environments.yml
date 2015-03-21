@@ -10,7 +10,7 @@
   file: path={{ www_dir }}/{{ project_name }}/dev state=directory owner=git group=git mode=755
 
 - name: Environments | Create a directory for the test environment
-  file: path={{ (1) }}/{{ project_name }}/test state=directory owner=git group=git mode=755
+  file: path={{ www_dir }}/{{ project_name }}/test state=directory owner=git group=git mode=755
 
 - name: Environments | Create a directory for the live environment
   file: path={{ www_dir }}/{{ project_name }}/live state=directory owner=git group=git mode=755

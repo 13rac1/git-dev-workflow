@@ -16,11 +16,8 @@
     - settings.yml
 
   tasks:
-    ##
-    # Installation of required software.
-    #
-    - name: Install | Install required packages.
-      apt: pkg=$item state=installed
+    - name: Install | Install required packages Ubuntu 12.04LTS & 14.04LTS
+      apt: pkg={{ item }} state=installed
       with_items:
         - apache2
         - libapache2-mod-php5
@@ -58,7 +55,7 @@
       register: make_password
 
     - name: Users | Create git user
-      user: name=git createhome=yes home=$git_dir generate_ssh_key=yes shell=/bin/bash password={{ make_password.stdout }}
+      user: name=git createhome=yes home={{ git_dir }} generate_ssh_key=yes shell=/bin/bash password={{ make_password.stdout }}
 
     - name: Users | Create project_name user
       user: name={{ project_name }} createhome=yes home=/home/{{ project_name }} generate_ssh_key=yes shell=/bin/bash password={{ make_password.stdout }}

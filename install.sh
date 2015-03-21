@@ -3,7 +3,11 @@ set -e
 set -v
 
 apt-get update
-apt-get -y install ansible
+apt-get install -y python-software-properties
+add-apt-repository -y ppa:rquillo/ansible
+
+apt-get update
+apt-get -y install -y ansible
 echo "localhost" > /etc/ansible/hosts
 
 cd playbook
