@@ -71,8 +71,7 @@ key has already been added to gitolite by the root user.
 
 Notes
 -----
-* It is designed for use with Ubuntu 12.04 LTS. It works with a minor warning
-  in Ubuntu 12.10; to be fixed.
+* It is designed/tested for use with Ubuntu 14.04 LTS. YMMV with other systems.
 * This initial version sets up dev/test/live environments for a single project
   only.
 * Git clean/reset is run on every environment update. All files must either be
