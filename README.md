@@ -106,7 +106,7 @@ Install
 4.  Install ansible:
 
         apt-get -y install git python-jinja2 python-yaml python-paramiko python-software-properties python-mysqldb software-properties-common
-        add-apt-repository -y ppa:rquillo/ansible/ubuntu
+        add-apt-repository -y ppa:rquillo/ansible
         apt-get update
         apt-get -y install ansible
         echo "localhost" > /etc/ansible/hosts
